@@ -20,7 +20,7 @@ Batcher.grid.Resources = function(config) {
             header: _('id')
             ,dataIndex: 'id'
             ,sortable: true
-            ,width: 60
+            ,width: 40
         },{
             header: _('pagetitle')
             ,dataIndex: 'pagetitle'
@@ -41,12 +41,20 @@ Batcher.grid.Resources = function(config) {
             ,dataIndex: 'published'
             ,sortable: true
             ,editor: { xtype: 'combo-boolean' ,renderer: 'boolean' }
-            ,width: 80
+            ,width: 60
         },{
             header: _('batcher.hidemenu')
             ,dataIndex: 'hidemenu'
             ,sortable: true
             ,editor: { xtype: 'combo-boolean' ,renderer: 'boolean' }
+            ,width: 60
+        },{
+            header: _('batcher.editedon')
+            ,dataIndex: 'editedon'
+            ,sortable: true
+            ,xtype: 'datecolumn'
+            ,format: MODx.config.manager_date_format+' '+MODx.config.manager_time_format
+            ,editable: false
             ,width: 80
         }]
         ,viewConfig: {
