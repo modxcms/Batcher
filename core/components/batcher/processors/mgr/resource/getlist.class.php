@@ -28,16 +28,18 @@
  * @subpackage processors
  */
 /* setup default properties */
-class BatcherResourceGetListProcessor extends modObjectGetListProcessor {
+class BatcherResourceGetListProcessor extends modObjectGetListProcessor
+{
     public $classKey = 'modResource';
     public $objectType = 'resource';
     public $defaultSortField = 'pagetitle';
     public $defaultSortDirection = 'ASC';
     public $checkListPermission = true;
 
-    public function prepareQueryBeforeCount(xPDOQuery $c) {
+    public function prepareQueryBeforeCount(xPDOQuery $c)
+    {
 
-        $c->leftJoin('modTemplate','Template');
+        $c->leftJoin('modTemplate', 'Template');
         $search = $this->getProperty('search');
         if (!empty($search)) {
             $c->where(array(
@@ -53,15 +55,23 @@ class BatcherResourceGetListProcessor extends modObjectGetListProcessor {
                 'template' => $template,
             ));
         }
+        $context_key = $this->getProperty('context_key');
+        if (!empty($context_key)) {
+            $c->where(array(
+                'context_key' => $context_key,
+            ));
+        }
         return $c;
     }
 
-    public function prepareQueryAfterCount(xPDOQuery $c) {
+    public function prepareQueryAfterCount(xPDOQuery $c)
+    {
         $c->select(array('modResource.*','Template.templatename'));
         return $c;
     }
 
-    public function prepareRow(xPDOObject $object) {
+    public function prepareRow(xPDOObject $object)
+    {
         $objectArray = $object->toArray();
         $objectArray['hidemenu'] = (boolean)$objectArray['hidemenu'];
         unset($objectArray['content']);

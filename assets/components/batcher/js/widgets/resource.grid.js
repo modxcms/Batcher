@@ -9,7 +9,7 @@ Batcher.grid.Resources = function(config) {
             action: 'mgr/resource/getList'
             ,thread: config.thread
         }
-        ,fields: ['id','pagetitle','template','templatename','alias','deleted','published','createdon','editedon','hidemenu']
+        ,fields: ['id','pagetitle','template','templatename','alias','deleted','published','createdon','editedon','hidemenu','context_key']
         ,paging: true
         ,autosave: false
         ,remoteSort: true
@@ -20,7 +20,7 @@ Batcher.grid.Resources = function(config) {
             header: _('id')
             ,dataIndex: 'id'
             ,sortable: true
-            ,width: 40
+            ,width: 60
         },{
             header: _('pagetitle')
             ,dataIndex: 'pagetitle'
@@ -36,25 +36,22 @@ Batcher.grid.Resources = function(config) {
             ,dataIndex: 'templatename'
             ,sortable: true
             ,width: 120
+         },{
+            header: _('context')
+            ,dataIndex: 'context_key'
+            ,sortable: true
+            ,width: 120
         },{
             header: _('batcher.published')
             ,dataIndex: 'published'
             ,sortable: true
             ,editor: { xtype: 'combo-boolean' ,renderer: 'boolean' }
-            ,width: 60
+            ,width: 80
         },{
             header: _('batcher.hidemenu')
             ,dataIndex: 'hidemenu'
             ,sortable: true
             ,editor: { xtype: 'combo-boolean' ,renderer: 'boolean' }
-            ,width: 60
-        },{
-            header: _('batcher.editedon')
-            ,dataIndex: 'editedon'
-            ,sortable: true
-            ,xtype: 'datecolumn'
-            ,format: MODx.config.manager_date_format+' '+MODx.config.manager_time_format
-            ,editable: false
             ,width: 80
         }]
         ,viewConfig: {
@@ -77,7 +74,9 @@ Batcher.grid.Resources = function(config) {
         ,tbar: [{
             text: _('batcher.bulk_actions')
             ,menu: this.getBatchMenu()
-        },'->',{
+        }
+        ,'->'
+        ,{
             xtype: 'modx-combo-template'
             ,name: 'template'
             ,id: 'batcher-template'
@@ -86,9 +85,17 @@ Batcher.grid.Resources = function(config) {
                 'select': {fn:this.filterTemplate,scope:this}
             }
         },{
+            xtype: 'modx-combo-context'
+            ,name: 'context'
+            ,id: 'batcher-context'
+            ,emptyText: _('batcher.filter_by_context')
+            ,listeners: {
+                'select': {fn:this.filterContext,scope:this}
+            }
+        },{
             xtype: 'textfield'
             ,name: 'search'
-            ,id: 'batcher-resource-search'
+            ,id: 'batcher-search'
             ,emptyText: _('search')
             ,listeners: {
                 'change': {fn:this.search,scope:this}
@@ -100,7 +107,7 @@ Batcher.grid.Resources = function(config) {
             }
         },{
             xtype: 'button'
-            ,id: 'batcher-resource-filter-clear'
+            ,id: 'batcher-filter-clear'
             ,text: _('filter_clear')
             ,listeners: {
                 'click': {fn: this.clearFilter, scope: this}
@@ -120,13 +127,19 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         this.getBottomToolbar().changePage(1);
         this.refresh();
     }
+    ,filterContext: function(cb,nv,ov) {
+        this.getStore().setBaseParam('context_key',cb.getValue());
+        this.getBottomToolbar().changePage(1);
+        this.refresh();
+    }
     ,clearFilter: function() {
-    	this.getStore().baseParams = {
+        this.getStore().baseParams = {
             action: 'mgr/resource/getList'
-    	};
-        Ext.getCmp('batcher-resource-search').reset();
+        };
+        Ext.getCmp('batcher-search').reset();
         Ext.getCmp('batcher-template').reset();
-    	this.getBottomToolbar().changePage(1);
+        Ext.getCmp('batcher-context').reset();
+        this.getBottomToolbar().changePage(1);
         this.refresh();
     }
     ,_renderUrl: function(v,md,rec) {
@@ -312,7 +325,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
                 },{
                     text: _('batcher.uncacheable')
                     ,handler: function(btn,e) {
-                        this.batchAction('uncacheable',btn,e);
+                        this.batchAction('cacheable',btn,e);
                     }
                     ,scope: this
                 },'-',{

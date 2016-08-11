@@ -49,6 +49,7 @@ $_lang['batcher.deleted'] = 'Supprimé';
 $_lang['batcher.editedby'] = 'Édité par';
 $_lang['batcher.editedon'] = 'Édité le';
 $_lang['batcher.filter_by_template'] = 'Trier par modèle';
+$_lang['batcher.filter_by_template'] = 'Trier par Context';
 $_lang['batcher.hidemenu'] = 'Masquer dans le menu';
 $_lang['batcher.intro_msg'] = 'Effectuez des actions par lots sur les ressources ci-dessous.';
 $_lang['batcher.menu_desc'] = 'Édition de ressources par lot.';
