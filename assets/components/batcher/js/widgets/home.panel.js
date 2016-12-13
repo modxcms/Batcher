@@ -32,14 +32,14 @@ Batcher.panel.Home = function(config) {
                     ,cls: 'main-wrapper'
                 }]
             },{
-                title: _('batcher.templates')
+                title: _('batcher.elements')
                 ,defaults: { autoHeight: true }
                 ,items: [{
-                    html: '<p>'+_('batcher.templates.intro_msg')+'</p>'
+                    html: '<p>'+_('batcher.elements.intro_msg')+'</p>'
                     ,border: false
                     ,bodyCssClass: 'panel-desc'
                 },{
-                    xtype: 'batcher-grid-template'
+                    xtype: 'batcher-grid-element'
                     ,cls: 'main-wrapper'
                     ,preventRender: true
                 }]

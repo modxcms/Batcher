@@ -9,7 +9,7 @@ Batcher.grid.Resources = function(config) {
             action: 'mgr/resource/getList'
             ,thread: config.thread
         }
-        ,fields: ['id','pagetitle','template','templatename','alias','deleted','published','createdon','editedon','hidemenu','context_key']
+        ,fields: ['id','pagetitle','template','templatename','alias','deleted','published','createdon','editedon','hidemenu']
         ,paging: true
         ,autosave: false
         ,remoteSort: true
@@ -20,7 +20,7 @@ Batcher.grid.Resources = function(config) {
             header: _('id')
             ,dataIndex: 'id'
             ,sortable: true
-            ,width: 60
+            ,width: 40
         },{
             header: _('pagetitle')
             ,dataIndex: 'pagetitle'
@@ -36,22 +36,25 @@ Batcher.grid.Resources = function(config) {
             ,dataIndex: 'templatename'
             ,sortable: true
             ,width: 120
-         },{
-            header: _('context')
-            ,dataIndex: 'context_key'
-            ,sortable: true
-            ,width: 120
         },{
             header: _('batcher.published')
             ,dataIndex: 'published'
             ,sortable: true
             ,editor: { xtype: 'combo-boolean' ,renderer: 'boolean' }
-            ,width: 80
+            ,width: 60
         },{
             header: _('batcher.hidemenu')
             ,dataIndex: 'hidemenu'
             ,sortable: true
             ,editor: { xtype: 'combo-boolean' ,renderer: 'boolean' }
+            ,width: 60
+        },{
+            header: _('batcher.editedon')
+            ,dataIndex: 'editedon'
+            ,sortable: true
+            ,xtype: 'datecolumn'
+            ,format: MODx.config.manager_date_format+' '+MODx.config.manager_time_format
+            ,editable: false
             ,width: 80
         }]
         ,viewConfig: {
@@ -74,9 +77,28 @@ Batcher.grid.Resources = function(config) {
         ,tbar: [{
             text: _('batcher.bulk_actions')
             ,menu: this.getBatchMenu()
-        }
-        ,'->'
-        ,{
+        },'->',{
+            xtype: 'modx-combo'
+            ,name: 'resource-status'
+            ,id: 'resource-status'
+            ,store: new Ext.data.SimpleStore({
+                        data: [
+                            [0, _('batcher.resources.all')],
+                            [1, _('batcher.resources.published')],
+                            [2, _('batcher.resources.unpublished')],
+                            [3, _('batcher.resources.deleted')]
+                        ],
+                        id: 0,
+                        fields: ["value", "text"]
+                    })
+            ,valueField: 'value'
+            ,displayField: 'text'
+            ,mode: "local"
+            ,emptyText: _('batcher.resources.all')
+             ,listeners: {
+                 'select': {fn:this.filterResources,scope:this}
+             }
+        },{
             xtype: 'modx-combo-template'
             ,name: 'template'
             ,id: 'batcher-template'
@@ -84,30 +106,117 @@ Batcher.grid.Resources = function(config) {
             ,listeners: {
                 'select': {fn:this.filterTemplate,scope:this}
             }
-        },{
-            xtype: 'modx-combo-context'
-            ,name: 'context'
-            ,id: 'batcher-context'
-            ,emptyText: _('batcher.filter_by_context')
-            ,listeners: {
-                'select': {fn:this.filterContext,scope:this}
+        }
+
+
+        ,{
+            xtype: 'modx-combo'
+            ,name: 'resource-filter'
+            ,id: 'resource-filter'
+            ,fieldLabel: 'Site filters'
+            ,url: Batcher.config.connector_url
+            ,fields: ['key', 'value']
+            ,valueField: 'key'
+            ,displayField: 'value'
+            ,baseParams: {
+                action: 'mgr/filters/getlist'
             }
-        },{
+            ,listeners:{
+                change: function(){
+                    // Ext.getCmp('application').baseParams.parent = this.getValue();
+                    // Ext.getCmp('application').store.load();
+                    
+                    //Ext.getCmp('application').setDisabled(false);
+                    // Ext.getCmp('pdfgenerator-panel-update').addToGrid(this, 'add');
+                }
+            }
+            ,emptyValue: 0
+//                    ,emptyText: _('pdfgenerator.field.sector.empty')
+            //,disabled: true
+        }
+
+
+
+
+
+        // ,{
+        //     xtype: 'modx-combo'
+        //     ,name: 'resource-field'
+        //     ,id: 'resource-field'
+        //     ,emptyText: 'Site filters'
+        //     ,store: new Ext.data.SimpleStore({
+        //                 data: [
+        //                     ['id', 'id'],
+        //                     ['pagetitle', 'pagetitle']
+        //                 ],
+        //                 id: 'id',
+        //                 fields: ["value", "text"]
+        //             })
+        //     ,valueField: 'value'
+        //     ,displayField: 'text'
+        //     ,listeners: {
+        //         'select': {fn:this.resourceFilters,scope:this}
+        //     }
+        //    // ,listeners: {
+        //    //      'select': {fn:this.filterResourceFields,scope:this}
+        //    //  }
+        // }
+
+        ,{
+            xtype: 'modx-combo'
+            ,name: 'filter-type'
+            ,id: 'filter-type'
+            ,emptyText: 'filter Type'
+            ,store: new Ext.data.SimpleStore({
+                        data: [
+                            ['=', '='],
+                            ['≠', '≠'],
+                            ['>', '>'],
+                            ['<', '<'],
+                            ['≥', '≥'],
+                            ['≤', '≤'],
+                            ['IN', 'IN'],
+                            ['LIKE', 'LIKE'],
+                            ['BETWEEN', 'BETWEEN'],
+                            ['IS NULL', 'IS NULL'],
+                            ['IS NOT NULL', 'IS NOT NULL']
+                        ],
+                        id: 'id',
+                        fields: ["value", "text"]
+                    })
+            ,valueField: 'value'
+            ,displayField: 'text'
+            ,mode: "local"
+           // ,listeners: {
+           //      'select': {fn:this.filterResourceFields,scope:this}
+           //  }
+        }
+
+        ,{
             xtype: 'textfield'
             ,name: 'search'
-            ,id: 'batcher-search'
+            ,id: 'batcher-resource-search'
             ,emptyText: _('search')
+            // ,listeners: {
+            //     'change': {fn:this.search,scope:this}
+            //     ,'render': {fn:function(tf) {
+            //         tf.getEl().addKeyListener(Ext.EventObject.ENTER,function() {
+            //             this.search(tf);
+            //         },this);
+            //     },scope:this}
+            // }
+        }
+
+        ,{
+            xtype: 'button'
+            ,id: 'batcher-resource-apply-filter'
+            ,text: 'Filter'
             ,listeners: {
-                'change': {fn:this.search,scope:this}
-                ,'render': {fn:function(tf) {
-                    tf.getEl().addKeyListener(Ext.EventObject.ENTER,function() {
-                        this.search(tf);
-                    },this);
-                },scope:this}
+                'click': {fn: this.applyFilter, scope: this}
             }
         },{
             xtype: 'button'
-            ,id: 'batcher-filter-clear'
+            ,id: 'batcher-resource-filter-clear'
             ,text: _('filter_clear')
             ,listeners: {
                 'click': {fn: this.clearFilter, scope: this}
@@ -122,23 +231,60 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         this.getBottomToolbar().changePage(1);
         this.refresh();
     }
-    ,filterTemplate: function(cb,nv,ov) {
+    ,filterResources: function(cb,nv,ov) {
+        this.getStore().setBaseParam('published', null);
+        this.getStore().setBaseParam('deleted', null);
+
+        var field;
+        var value;
+        if(cb.getValue() == 1){
+            field = 'published';
+            value = 1;
+
+        }   
+        if(cb.getValue() == 2){
+            field = 'published';
+            value = '0';
+        }   
+        if(cb.getValue() == 3){
+            field = 'deleted';
+            value = 1;
+        }
+
+        this.getStore().setBaseParam(field,value);
+        this.getBottomToolbar().changePage(1);
+        this.refresh();
+    },filterTemplate: function(cb,nv,ov) {
         this.getStore().setBaseParam('template',cb.getValue());
         this.getBottomToolbar().changePage(1);
         this.refresh();
-    }
-    ,filterContext: function(cb,nv,ov) {
-        this.getStore().setBaseParam('context_key',cb.getValue());
-        this.getBottomToolbar().changePage(1);
+    },applyFilter: function() {
+        /*
+         * Get the values of comboboxes and search field and do search.
+         */
+        var filter = Ext.getCmp('resource-filter').getValue();
+        var filterType = Ext.getCmp('filter-type').getValue();
+        var searchValue = Ext.getCmp('batcher-resource-search').getValue();
+
+        // console.log(filter);
+        // console.log(filterType);
+        // console.log(searchValue);
+
+        //See: https://rtfm.modx.com/revolution/2.x/developing-in-modx/advanced-development/custom-manager-pages/modext/modext-tutorials/8.-ext-js-tutorial-inside-a-cmp
+
+        console.log(Ext.data);
+        console.log(this.getStore());
         this.refresh();
+
+
     }
     ,clearFilter: function() {
         this.getStore().baseParams = {
             action: 'mgr/resource/getList'
         };
-        Ext.getCmp('batcher-search').reset();
+        Ext.getCmp('batcher-resource-search').reset();
         Ext.getCmp('batcher-template').reset();
-        Ext.getCmp('batcher-context').reset();
+        Ext.getCmp('resource-status').reset();
         this.getBottomToolbar().changePage(1);
         this.refresh();
     }
@@ -181,7 +327,6 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         cs = cs.substr(1);
         return cs;
     }
-    
     ,batchAction: function(act,btn,e) {
         var cs = this.getSelectedAsList();
         if (cs === false) return false;
@@ -203,6 +348,25 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
             }
         });
         return true;
+    }
+   ,permanentDelete: function(btn,e) {
+        var cs = this.getSelectedAsList();
+        if (cs === false) return false;
+
+        MODx.msg.confirm({
+            title: _('batcher.permanentdelete.title')
+            ,text: _('batcher.permanentdelete.message')
+            ,url: Batcher.config.connector_url
+            ,params: {
+                action: 'mgr/resource/remove'
+                ,resources: cs
+            }
+            ,listeners: {
+                'success': {fn:function(r) {
+                    this.refresh();
+                },scope:this}
+            }
+        });
     }
     ,changeParent: function(btn,e) {
         var cs = this.getSelectedAsList();
@@ -325,7 +489,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
                 },{
                     text: _('batcher.uncacheable')
                     ,handler: function(btn,e) {
-                        this.batchAction('cacheable',btn,e);
+                        this.batchAction('uncacheable',btn,e);
                     }
                     ,scope: this
                 },'-',{
@@ -381,6 +545,10 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         },{
             text: _('batcher.change_authors')
             ,handler: this.changeAuthors
+            ,scope: this
+        },{
+            text: _('batcher.permanentdelete')
+            ,handler: this.permanentDelete
             ,scope: this
         });
         return bm;

@@ -49,7 +49,6 @@ $_lang['batcher.deleted'] = 'Gelöscht';
 $_lang['batcher.editedby'] = 'Bearbeitet von';
 $_lang['batcher.editedon'] = 'Bearbeitet am';
 $_lang['batcher.filter_by_template'] = 'Nach Template filtern';
-$_lang['batcher.filter_by_context'] = 'Nach Context filtern';
 $_lang['batcher.hidemenu'] = 'Nicht in Menüs anzeigen';
 $_lang['batcher.intro_msg'] = 'Hier können Sie einige Einstellungen für mehrere Ressourcen gleichzeitig bearbeiten.';
 $_lang['batcher.menu_desc'] = 'Eine Erweiterung zum gleichzeitigen Bearbeiten mehrerer Ressourcen.';

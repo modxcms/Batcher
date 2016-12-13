@@ -55,18 +55,28 @@ class BatcherResourceGetListProcessor extends modObjectGetListProcessor
                 'template' => $template,
             ));
         }
-        $context_key = $this->getProperty('context_key');
-        if (!empty($context_key)) {
+        
+        $published = $this->getProperty('published');
+        if (!empty($published) OR $published == '0') {
             $c->where(array(
-                'context_key' => $context_key,
+                'published' => $published,
             ));
         }
+
+        $deleted = $this->getProperty('deleted');
+        if (!empty($deleted)) {
+            $c->where(array(
+                'deleted' => $deleted,
+            ));
+        }
+
         return $c;
     }
 
     public function prepareQueryAfterCount(xPDOQuery $c)
     {
         $c->select(array('modResource.*','Template.templatename'));
+       
         return $c;
     }
 

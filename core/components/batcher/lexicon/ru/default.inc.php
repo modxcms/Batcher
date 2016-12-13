@@ -49,7 +49,6 @@ $_lang['batcher.deleted'] = 'Удалён';
 $_lang['batcher.editedby'] = 'Отредактировал';
 $_lang['batcher.editedon'] = 'Отредактирован';
 $_lang['batcher.filter_by_template'] = 'Фильтровать по шаблону';
-$_lang['batcher.filter_by_context'] = 'Filter by Context';
 $_lang['batcher.hidemenu'] = 'Не показывать в меню';
 $_lang['batcher.intro_msg'] = 'Массовые действия над ресурсами.';
 $_lang['batcher.menu_desc'] = 'Компонент для массового редактирования ресурсов.';

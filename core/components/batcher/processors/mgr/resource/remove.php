@@ -22,21 +22,20 @@
  * @package batcher
  */
 /**
+ * Change dates for multiple resources
+ *
  * @package batcher
- * @subpackage controllers
+ * @subpackage processors
  */
-class BatcherHomeManagerController extends BatcherBaseManagerController {
+if (!$modx->hasPermission('save_document')) return $modx->error->failure($modx->lexicon('access_denied'));
 
-    public function process(array $scriptProperties = array()) {
-        
-    }
-    public function getPageTitle() { return $this->modx->lexicon('batcher'); }
-    public function loadCustomCssJs() {
-        $this->addJavascript($this->modx->getOption('manager_url').'assets/modext/util/datetime.js');
-        $this->addJavascript($this->batcher->config['jsUrl'].'widgets/element.grid.js');
-        $this->addJavascript($this->batcher->config['jsUrl'].'widgets/resource.grid.js');
-        $this->addJavascript($this->batcher->config['jsUrl'].'widgets/home.panel.js');
-        $this->addLastJavascript($this->batcher->config['jsUrl'].'sections/home.js');
-    }
-    public function getTemplateFile() { return $this->batcher->config['templatesPath'].'home.tpl'; }
+if (empty($scriptProperties['resources'])) {
+    return $modx->error->failure($modx->lexicon('batcher.resources_err_ns'));
 }
+
+$resourceIds = explode(',',$scriptProperties['resources']);
+if(is_array($resourceIds)){
+	$modx->removeCollection('modResource', array("id:IN" => array($scriptProperties['resources']) ));
+}
+
+return $modx->error->success();
