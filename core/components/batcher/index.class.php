@@ -25,12 +25,9 @@
  * @package batcher
  * @subpackage controllers
  */
-require_once dirname(__FILE__) . '/model/batcher/batcher.class.php';
-class IndexManagerController extends modExtraManagerController {
-    public static function getDefaultController() { return 'home'; }
-}
+require_once __DIR__ . '/model/batcher/batcher.class.php';
 
-abstract class BatcherManagerController extends modManagerController {
+abstract class BatcherBaseManagerController extends modExtraManagerController {
     /** @var Batcher $batcher */
     public $batcher;
     public function initialize() {
@@ -49,4 +46,11 @@ abstract class BatcherManagerController extends modManagerController {
         return array('batcher:default');
     }
     public function checkPermissions() { return true;}
+}
+
+class IndexManagerController extends BatcherBaseManagerController {
+    public static function getDefaultController()
+    {
+        return 'home';
+    }
 }

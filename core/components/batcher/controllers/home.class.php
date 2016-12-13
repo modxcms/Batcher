@@ -25,7 +25,7 @@
  * @package batcher
  * @subpackage controllers
  */
-class BatcherHomeManagerController extends BatcherManagerController {
+class BatcherHomeManagerController extends BatcherBaseManagerController {
 
     public function process(array $scriptProperties = array()) {
         
