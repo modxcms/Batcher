@@ -186,20 +186,20 @@ Ext.extend(Batcher.grid.Elements,MODx.grid.Grid,{
         });
         return true;
     }
-    ,changeTVValues: function(btn,e) {
-        var sm = this.getSelectionModel();
-        var cs = sm.getSelected();
-        if (cs === false) return false;
-
-        location.href = MODx.config.manager_url+'?a='+MODx.request.a+'&action=element/tvs&element='+cs.data.id;
-    }
-    ,changeDefaultTVValues: function(btn,e) {
-        var sm = this.getSelectionModel();
-        var cs = sm.getSelected();
-        if (cs === false) return false;
-
-        location.href = MODx.config.manager_url+'?a='+MODx.request.a+'&action=element/tvdefaults&element='+cs.data.id;
-    }
+    // ,changeTVValues: function(btn,e) {
+    //     var sm = this.getSelectionModel();
+    //     var cs = sm.getSelected();
+    //     if (cs === false) return false;
+    //
+    //     location.href = MODx.config.manager_url+'?a='+MODx.request.a+'&action=element/tvs&element='+cs.data.id;
+    // }
+    // ,changeDefaultTVValues: function(btn,e) {
+    //     var sm = this.getSelectionModel();
+    //     var cs = sm.getSelected();
+    //     if (cs === false) return false;
+    //
+    //     location.href = MODx.config.manager_url+'?a='+MODx.request.a+'&action=element/tvdefaults&element='+cs.data.id;
+    // }
     ,changeCategory: function(btn,e) {
         var cs = this.getSelectedAsList();
         if (cs === false) return false;
@@ -225,14 +225,6 @@ Ext.extend(Batcher.grid.Elements,MODx.grid.Grid,{
         bm.push({
             text: _('batcher.change_category')
             ,handler: this.changeCategory
-            ,scope: this
-        },'-',{
-            text: _('batcher.change_tv_values')
-            ,handler: this.changeTVValues
-            ,scope: this
-        },{
-            text: _('batcher.change_default_tv_values')
-            ,handler: this.changeDefaultTVValues
             ,scope: this
         });
         return bm;
