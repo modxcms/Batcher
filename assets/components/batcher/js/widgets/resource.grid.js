@@ -107,16 +107,11 @@ Batcher.grid.Resources = function(config) {
             xtype: 'modx-combo-template'
             ,name: 'template'
             ,id: 'batcher-template'
-            // ,store: new Ext.data.ArrayStore({
-            //     id: 0,
-            //     fields: ["id", "templatename"],
-            //     data: [
-            //         [0, _('batcher.resources.all')]
-            //     ]
-            // })
-            // ,displayField: 'templatename'
-            // ,valueField: 'id'
-            // ,mode: "local"
+            ,baseParams: {
+                action: 'element/template/getList'
+                ,combo: '1'
+                ,limit: 0
+            }
             ,emptyText: _('batcher.filter_by_template')
             ,listeners: {
                 'select': {fn:this.filterTemplate,scope:this}
