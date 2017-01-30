@@ -159,20 +159,6 @@ Ext.extend(Batcher.grid.Templates,MODx.grid.Grid,{
         });
         return true;
     }
-    // ,changeTVValues: function(btn,e) {
-    //     var sm = this.getSelectionModel();
-    //     var cs = sm.getSelected();
-    //     if (cs === false) return false;
-    //
-    //     location.href = MODx.config.manager_url+'?a='+MODx.request.a+'&action=template/tvs&template='+cs.data.id;
-    // }
-    // ,changeDefaultTVValues: function(btn,e) {
-    //     var sm = this.getSelectionModel();
-    //     var cs = sm.getSelected();
-    //     if (cs === false) return false;
-    //
-    //     location.href = MODx.config.manager_url+'?a='+MODx.request.a+'&action=template/tvdefaults&template='+cs.data.id;
-    // }
     ,changeCategory: function(btn,e) {
         var cs = this.getSelectedAsList();
         if (cs === false) return false;
