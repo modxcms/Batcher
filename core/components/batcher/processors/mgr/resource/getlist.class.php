@@ -55,6 +55,13 @@ class BatcherResourceGetListProcessor extends modObjectGetListProcessor
                 'template' => $template,
             ));
         }
+
+        $contextKey = $this->getProperty('context_key');
+        if (!empty($contextKey)) {
+            $c->where(array(
+                'context_key' => $contextKey,
+            ));
+        }
         
         $published = $this->getProperty('published');
         if (!empty($published) OR $published == '0') {

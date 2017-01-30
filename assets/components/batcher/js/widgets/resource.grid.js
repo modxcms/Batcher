@@ -9,7 +9,7 @@ Batcher.grid.Resources = function(config) {
             action: 'mgr/resource/getList'
             ,thread: config.thread
         }
-        ,fields: ['id','pagetitle','template','templatename','alias','deleted','published','createdon','editedon','hidemenu']
+        ,fields: ['id','pagetitle','template','templatename','alias','deleted','published','createdon','editedon','hidemenu','context_key']
         ,paging: true
         ,autosave: false
         ,remoteSort: true
@@ -34,6 +34,11 @@ Batcher.grid.Resources = function(config) {
         },{
             header: _('batcher.template')
             ,dataIndex: 'templatename'
+            ,sortable: true
+            ,width: 120
+        },{
+            header: _('batcher.context')
+            ,dataIndex: 'context_key'
             ,sortable: true
             ,width: 120
         },{
@@ -102,14 +107,29 @@ Batcher.grid.Resources = function(config) {
             xtype: 'modx-combo-template'
             ,name: 'template'
             ,id: 'batcher-template'
+            // ,store: new Ext.data.ArrayStore({
+            //     id: 0,
+            //     fields: ["id", "templatename"],
+            //     data: [
+            //         [0, _('batcher.resources.all')]
+            //     ]
+            // })
+            // ,displayField: 'templatename'
+            // ,valueField: 'id'
+            // ,mode: "local"
             ,emptyText: _('batcher.filter_by_template')
             ,listeners: {
                 'select': {fn:this.filterTemplate,scope:this}
             }
-        }
-
-
-        ,{
+        },{
+            xtype: 'modx-combo-context'
+            ,name: 'context'
+            ,id: 'batcher-context'
+            ,emptyText: _('batcher.filter_by_context')
+            ,listeners: {
+                'select': {fn:this.filterContext,scope:this}
+            }
+        },{
             xtype: 'modx-combo'
             ,name: 'resource-filter'
             ,id: 'resource-filter'
@@ -255,7 +275,15 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         this.getBottomToolbar().changePage(1);
         this.refresh();
     },filterTemplate: function(cb,nv,ov) {
-        this.getStore().setBaseParam('template',cb.getValue());
+        if(cb.getValue() == 0){
+            this.getStore().setBaseParam('template', null);
+        } else {
+            this.getStore().setBaseParam('template', cb.getValue());
+        }
+        this.getBottomToolbar().changePage(1);
+        this.refresh();
+    },filterContext: function(cb,nv,ov) {
+        this.getStore().setBaseParam('context_key',cb.getValue());
         this.getBottomToolbar().changePage(1);
         this.refresh();
     },applyFilter: function() {
@@ -285,6 +313,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         Ext.getCmp('batcher-resource-search').reset();
         Ext.getCmp('batcher-template').reset();
         Ext.getCmp('resource-status').reset();
+        Ext.getCmp('batcher-context').reset();
         this.getBottomToolbar().changePage(1);
         this.refresh();
     }
