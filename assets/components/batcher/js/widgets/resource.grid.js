@@ -126,8 +126,8 @@ Batcher.grid.Resources = function(config) {
             }
         },{
             xtype: 'modx-combo'
-            ,name: 'resource-filter'
-            ,id: 'resource-filter'
+            ,name: 'filter_field'
+            ,id: 'filter_field'
             ,fieldLabel: 'Site filters'
             ,url: Batcher.config.connector_url
             ,fields: ['key', 'value']
@@ -179,8 +179,8 @@ Batcher.grid.Resources = function(config) {
 
         ,{
             xtype: 'modx-combo'
-            ,name: 'filter-type'
-            ,id: 'filter-type'
+            ,name: 'filter_type'
+            ,id: 'filter_type'
             ,emptyText: 'filter Type'
             ,store: new Ext.data.SimpleStore({
                         data: [
@@ -209,7 +209,7 @@ Batcher.grid.Resources = function(config) {
 
         ,{
             xtype: 'textfield'
-            ,name: 'search'
+            ,name: 'filter_value'
             ,id: 'batcher-resource-search'
             ,emptyText: _('search')
             // ,listeners: {
@@ -232,9 +232,11 @@ Batcher.grid.Resources = function(config) {
         },{
             xtype: 'button'
             ,id: 'batcher-resource-filter-clear'
-            ,text: _('filter_clear')
+            ,text: '<i class="icon icon-times"></i>'
             ,listeners: {
-                'click': {fn: this.clearFilter, scope: this}
+                click: {
+                    fn: this.clearFilter, scope: this
+                }
             }
         }]
     });

@@ -21,7 +21,8 @@ Batcher.panel.Home = function(config) {
             ,items: [{
                 title: _('batcher.resources')
                 ,tabTip: 'Batcher Batcher Batcher (mushroom mushroom!)'
-                ,defaults: { autoHeight: true }
+                ,autoHeight: true
+                ,layout: 'form'
                 ,items: [{
                     html: '<p>'+_('batcher.intro_msg')+'</p>'
                     ,border: false
@@ -33,7 +34,6 @@ Batcher.panel.Home = function(config) {
                 }]
             },{
                 title: _('batcher.elements')
-                ,defaults: { autoHeight: true }
                 ,items: [{
                     html: '<p>'+_('batcher.elements.intro_msg')+'</p>'
                     ,border: false
