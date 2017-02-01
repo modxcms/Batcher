@@ -510,7 +510,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
                 xtype: 'modx-combo'
                 ,name: 'filter_field'
                 ,id: 'batcher_filter_field'
-                ,width: 240
+                ,width: 160
                 ,emptyText: _('batcher.filter.field')
                 ,fieldLabel: 'Site filters'
                 ,url: Batcher.config.connector_url
@@ -519,11 +519,6 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
                 ,displayField: 'value'
                 ,baseParams: {
                     action: 'mgr/filters/getlist'
-                }
-                ,listeners:{
-                    change: function(){
-
-                    }
                 }
                 ,emptyValue: 0
             },{
@@ -552,11 +547,23 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
                 ,valueField: 'value'
                 ,displayField: 'text'
                 ,mode: "local"
+                ,listeners:{
+                    select: function(combo, records){
+                        var disabled = false;
+                        if (records.data.value) {
+                            var value = records.data.value;
+                            if (value == 'IS NULL' || value == 'IS NOT NULL') {
+                                disabled = true;
+                            }
+                        }
+                        Ext.getCmp('batcher_filter_value').setDisabled(disabled);
+                    }
+                }
             },{
                 xtype: 'textfield'
                 ,name: 'filter_value'
                 ,id: 'batcher_filter_value'
-                ,width: 240
+                ,width: 200
                 ,emptyText: _('batcher.filter.value')
                 ,listeners: {
                     'render': {fn:function(tf) {
@@ -576,7 +583,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
             },{
                 xtype: 'button'
                 , id: 'batcher-advanced-info'
-                , text: '<i class="icon icon-question"></i>&nbsp;'+_('info')
+                , text: '<i class="icon icon-question"></i>&nbsp;'+_('help')
                 , cls: 'batcher-btn-link'
                 , listeners: {
                     'click': {fn: this.showInfo, scope: this}
