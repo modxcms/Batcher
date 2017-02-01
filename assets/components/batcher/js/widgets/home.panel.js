@@ -34,6 +34,8 @@ Batcher.panel.Home = function(config) {
                 }]
             },{
                 title: _('batcher.elements')
+                ,autoHeight: true
+                ,layout: 'form'
                 ,items: [{
                     html: '<p>'+_('batcher.elements.intro_msg')+'</p>'
                     ,border: false

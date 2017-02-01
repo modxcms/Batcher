@@ -146,38 +146,7 @@ Batcher.grid.Resources = function(config) {
                 }
             }
             ,emptyValue: 0
-//                    ,emptyText: _('pdfgenerator.field.sector.empty')
-            //,disabled: true
-        }
-
-
-
-
-
-        // ,{
-        //     xtype: 'modx-combo'
-        //     ,name: 'resource-field'
-        //     ,id: 'resource-field'
-        //     ,emptyText: 'Site filters'
-        //     ,store: new Ext.data.SimpleStore({
-        //                 data: [
-        //                     ['id', 'id'],
-        //                     ['pagetitle', 'pagetitle']
-        //                 ],
-        //                 id: 'id',
-        //                 fields: ["value", "text"]
-        //             })
-        //     ,valueField: 'value'
-        //     ,displayField: 'text'
-        //     ,listeners: {
-        //         'select': {fn:this.resourceFilters,scope:this}
-        //     }
-        //    // ,listeners: {
-        //    //      'select': {fn:this.filterResourceFields,scope:this}
-        //    //  }
-        // }
-
-        ,{
+        },{
             xtype: 'modx-combo'
             ,name: 'filter_type'
             ,id: 'filter_type'
@@ -202,27 +171,12 @@ Batcher.grid.Resources = function(config) {
             ,valueField: 'value'
             ,displayField: 'text'
             ,mode: "local"
-           // ,listeners: {
-           //      'select': {fn:this.filterResourceFields,scope:this}
-           //  }
-        }
-
-        ,{
+        },{
             xtype: 'textfield'
             ,name: 'filter_value'
-            ,id: 'batcher-resource-search'
+            ,id: 'filter_value'
             ,emptyText: _('search')
-            // ,listeners: {
-            //     'change': {fn:this.search,scope:this}
-            //     ,'render': {fn:function(tf) {
-            //         tf.getEl().addKeyListener(Ext.EventObject.ENTER,function() {
-            //             this.search(tf);
-            //         },this);
-            //     },scope:this}
-            // }
-        }
-
-        ,{
+        },{
             xtype: 'button'
             ,id: 'batcher-resource-apply-filter'
             ,text: 'Filter'
@@ -271,7 +225,8 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         this.getStore().setBaseParam(field,value);
         this.getBottomToolbar().changePage(1);
         this.refresh();
-    },filterTemplate: function(cb,nv,ov) {
+    }
+    ,filterTemplate: function(cb,nv,ov) {
         if(cb.getValue() == 0){
             this.getStore().setBaseParam('template', null);
         } else {
@@ -279,28 +234,25 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         }
         this.getBottomToolbar().changePage(1);
         this.refresh();
-    },filterContext: function(cb,nv,ov) {
+    }
+    ,filterContext: function(cb,nv,ov) {
         this.getStore().setBaseParam('context_key',cb.getValue());
         this.getBottomToolbar().changePage(1);
         this.refresh();
-    },applyFilter: function() {
+    }
+    ,applyFilter: function() {
         /*
          * Get the values of comboboxes and search field and do search.
          */
-        var filter = Ext.getCmp('resource-filter').getValue();
-        var filterType = Ext.getCmp('filter-type').getValue();
-        var searchValue = Ext.getCmp('batcher-resource-search').getValue();
+        var filterField = Ext.getCmp('filter_field').getValue();
+        var filterType = Ext.getCmp('filter_type').getValue();
+        var filterValue = Ext.getCmp('filter_value').getValue();
 
-        // console.log(filter);
-        // console.log(filterType);
-        // console.log(searchValue);
-
-        //See: https://rtfm.modx.com/revolution/2.x/developing-in-modx/advanced-development/custom-manager-pages/modext/modext-tutorials/8.-ext-js-tutorial-inside-a-cmp
-
-        console.log(Ext.data);
-        console.log(this.getStore());
+        this.getStore().setBaseParam('filter_field',filterField);
+        this.getStore().setBaseParam('filter_type',filterType);
+        this.getStore().setBaseParam('filter_value',filterValue);
+        this.getBottomToolbar().changePage(1);
         this.refresh();
-
 
     }
     ,clearFilter: function() {
@@ -581,6 +533,14 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
     }
 });
 Ext.reg('batcher-grid-resource',Batcher.grid.Resources);
+
+// grid.getTopToolbar().insert(0, new Ext.Toolbar({
+//     items: [
+//         new Ext.Button({
+//             text: 'Added button'
+//         })
+//     ]
+// }));
 
 
 Batcher.window.ChangeParent = function(config) {
