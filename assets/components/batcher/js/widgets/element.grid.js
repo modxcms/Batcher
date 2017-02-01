@@ -9,7 +9,7 @@ Batcher.grid.Elements = function(config) {
             action: 'mgr/element/getList'
             ,thread: config.thread
         }
-        ,fields: ['id','name','description','category']
+        ,fields: ['id', 'name', 'description', 'category', 'category_name']
         ,paging: true
         ,autosave: false
         ,remoteSort: true
@@ -28,7 +28,7 @@ Batcher.grid.Elements = function(config) {
             ,width: 300
         },{
             header: _('category')
-            ,dataIndex: 'category'
+            ,dataIndex: 'category_name'
             ,sortable: true
             ,width: 120
         }]
@@ -67,7 +67,8 @@ Batcher.grid.Elements = function(config) {
                     })
             ,valueField: 'value'
             ,displayField: 'text'
-            ,mode: "local"
+            ,mode: 'local'
+            ,value: 'modTemplate'
             ,emptyText: _('batcher.filter.element_type')
             ,listeners: {
                 'select': {fn:this.filterType,scope:this}
@@ -109,10 +110,11 @@ Ext.extend(Batcher.grid.Elements,MODx.grid.Grid,{
 
         var field = 'element-type';
         var value = cb.getValue();
-        
+
         this.getStore().setBaseParam(field,value);
         this.getBottomToolbar().changePage(1);
         this.refresh();
+        this.getSelectionModel().clearSelections(true);
     }
     ,clearFilter: function() {
         this.getStore().baseParams = {
@@ -122,6 +124,7 @@ Ext.extend(Batcher.grid.Elements,MODx.grid.Grid,{
         Ext.getCmp('batcher-element-search').reset();
         this.getBottomToolbar().changePage(1);
         this.refresh();
+        this.getSelectionModel().clearSelections(true);
     }
     ,_renderUrl: function(v,md,rec) {
         return '<a href="'+rec.data.url+'" target="_blank">'+rec.data.name+'</a>';
@@ -162,7 +165,7 @@ Ext.extend(Batcher.grid.Elements,MODx.grid.Grid,{
         cs = Ext.util.Format.substr(cs,1);
         return cs;
     }
-    
+
     ,batchAction: function(act,btn,e) {
         var cs = this.getSelectedAsList();
         if (cs === false) return false;
@@ -189,7 +192,10 @@ Ext.extend(Batcher.grid.Elements,MODx.grid.Grid,{
         var cs = this.getSelectedAsList();
         if (cs === false) return false;
 
-        var r = {elements: cs};
+        var r = {
+            element_ids: cs,
+            element_type: Ext.getCmp('batcher-element-type').getValue()
+        };
         if (!this.changeCategoryWindow) {
             this.changeCategoryWindow = MODx.load({
                 xtype: 'batcher-window-change-category'
@@ -229,7 +235,10 @@ Batcher.window.ChangeCategory = function(config) {
         ,width: 400
         ,fields: [{
             xtype: 'hidden'
-            ,name: 'elements'
+            ,name: 'element_ids'
+        },{
+            xtype: 'hidden'
+            ,name: 'element_type'
         },{
             xtype: 'modx-combo-category'
             ,fieldLabel: _('batcher.category')

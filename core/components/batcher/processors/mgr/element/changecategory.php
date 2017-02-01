@@ -22,33 +22,45 @@
  * @package batcher
  */
 /**
- * Change template for multiple resources
+ * Change template for multiple elements
  *
  * @package batcher
  * @subpackage processors
  */
-if (!$modx->hasPermission('save_template')) return $modx->error->failure($modx->lexicon('access_denied'));
+if (!$modx->hasPermission('save_template')) {
+    return $modx->error->failure($modx->lexicon('access_denied'));
+}
 
-if (empty($scriptProperties['templates'])) {
+if (empty($scriptProperties['element_ids'])) {
     return $modx->error->failure($modx->lexicon('batcher.templates_err_ns'));
+}
+
+/* Get the element type from request */
+$elementType = 'modTemplate';
+if (!empty($scriptProperties['element_type'])) {
+    $elementType = $scriptProperties['element_type'];
 }
 /* get parent */
 if (!empty($scriptProperties['category'])) {
-    $category = $modx->getObject('modCategory',$scriptProperties['category']);
-    if (empty($category)) return $modx->error->failure($modx->lexicon('batcher.category_err_nf',array('id' => $scriptProperties['category'])));
-}
-
-/* iterate over resources */
-$templateIds = explode(',',$scriptProperties['templates']);
-foreach ($templateIds as $templateId) {
-    $template = $modx->getObject('modTemplate',$templateId);
-    if ($template == null) continue;
-
-    $template->set('category',$scriptProperties['category']);
-
-    if ($template->save() === false) {
-        
+    $category = $modx->getObject('modCategory', $scriptProperties['category']);
+    if (empty($category)) {
+        return $modx->error->failure(
+            $modx->lexicon(
+                'batcher.category_err_nf',
+                array('id' => $scriptProperties['category'])
+            )
+        );
     }
+}
+/* iterate over resources */
+$elementIds = explode(',', $scriptProperties['element_ids']);
+foreach ($elementIds as $elementId) {
+    $element = $modx->getObject($elementType, $elementId);
+    if ($element == null) {
+        continue;
+    }
+    $element->set('category', $scriptProperties['category']);
+    $element->save();
 }
 
 return $modx->error->success();

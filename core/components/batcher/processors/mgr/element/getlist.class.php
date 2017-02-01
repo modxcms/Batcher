@@ -70,26 +70,26 @@ class BatcherTemplateGetListProcessor extends modObjectGetListProcessor {
             $c->limit($limit,$start);
         }
 
-        $data['results'] = $this->modx->getCollection($this->classKey,$c);
+        $data['results'] = $this->modx->getCollection($this->classKey, $c);
         return $data;
     }
 
-    public function prepareRow(xPDOObject $object) {
+    public function prepareRow(xPDOObject $object)
+    {
         $objectArray = $object->toArray();
-
-        if($this->classKey == 'modCategory') {
+        $objectArray['category_name'] = '-';
+        if ($this->classKey === 'modCategory') {
             $objectArray['name'] = $objectArray['category'];
             unset($objectArray['category']);
         } else {
-            $category = $this->modx->getObject('modCategory',$objectArray['category']);
-            if($category) {
-                $objectArray['category'] = $category->get('category');
+            if ($objectArray['category']) {
+                $category = $this->modx->getObject('modCategory', $objectArray['category']);
+                if ($category) {
+                    $objectArray['category_name'] = $category->get('category');
+                }
             }
         }
-        if($objectArray['category'] == '0' || !$objectArray['category']) {
-            $objectArray['category'] = '-';
-        }
-        if($this->classKey == 'modTemplate') {
+        if ($this->classKey === 'modTemplate') {
             $objectArray['name'] = $objectArray['templatename'];
         }
         return $objectArray;

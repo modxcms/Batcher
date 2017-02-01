@@ -131,6 +131,13 @@ Batcher.grid.Resources = function(config) {
             ,width: 180
             ,id: 'batcher_resource_search'
             ,emptyText: _('search_ellipsis')
+            ,listeners: {
+                'render': {fn:function(tf) {
+                    tf.getEl().addKeyListener(Ext.EventObject.ENTER,function() {
+                        this.search(tf);
+                    },this);
+                },scope:this}
+            }
         },{
             xtype: 'button'
             ,cls: 'batcher-btn-link'
@@ -551,6 +558,13 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
                 ,id: 'batcher_filter_value'
                 ,width: 240
                 ,emptyText: _('batcher.filter.value')
+                ,listeners: {
+                    'render': {fn:function(tf) {
+                        tf.getEl().addKeyListener(Ext.EventObject.ENTER,function() {
+                            this.search(tf);
+                        },this);
+                    },scope:this}
+                }
             },{
                 xtype: 'button'
                 ,id: 'batcher-resource-apply-filter'
