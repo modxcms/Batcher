@@ -46,3 +46,7 @@
     color: #3697cd !important;
     text-decoration: underline !important;
 }
+
+.batcher-info-window .x-panel-nofooter {
+    display: none;
+}

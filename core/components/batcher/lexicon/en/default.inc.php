@@ -56,6 +56,13 @@ $_lang['batcher.filter.type'] = 'Operator';
 $_lang['batcher.filter.value'] = 'Value';
 $_lang['batcher.filter.clear'] = 'Clear filters';
 $_lang['batcher.filter.advanced'] = 'Advanced filter';
+$_lang['batcher.filter.advanced.desc'] = 'The advanced filter allows you to filter on all resource fields with custom operators.<br>
+For the operators `IN` and `BETWEEN` the values have to be comma-separated, and for the `LIKE` operator you can use the `%` wildcard.<br><br>
+<b>Examples:</b><br>
+Field: `id` - Operator: `BETWEEN` - Value: `1,5` will give you resources with IDs between 1 and 5.<br>
+Field: `id` - Operator: `IN` - Value: `1,3,6` will give resources with IDs 1, 3 and 6.<br>
+Field: `pagetitle` - Operator: `LIKE` - Value: `page%` will give all resources with pagetitle starting with `page`.<br>
+';
 $_lang['batcher.filter.element_type'] = 'Element type';
 $_lang['batcher.hidemenu'] = 'Hidden from Menus';
 $_lang['batcher.intro_msg'] = 'Perform batch actions on Resources here.';

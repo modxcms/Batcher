@@ -506,7 +506,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         this.advancedBar = new Ext.Toolbar({
             renderTo: this.tbar
             ,id: 'modx-resource-advanced-filter'
-            ,items: ['->',{
+            ,items: ['->', {
                 xtype: 'modx-combo'
                 ,name: 'filter_field'
                 ,id: 'batcher_filter_field'
@@ -573,8 +573,25 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
                 ,listeners: {
                     'click': {fn: this.applyFilter, scope: this}
                 }
+            },{
+                xtype: 'button'
+                , id: 'batcher-advanced-info'
+                , text: '<i class="icon icon-question"></i>&nbsp;'+_('info')
+                , cls: 'batcher-btn-link'
+                , listeners: {
+                    'click': {fn: this.showInfo, scope: this}
+                }
             }]
         });
+    }
+    ,showInfo: function(btn,e) {
+        if (!this.filterInfoWindow) {
+            this.filterInfoWindow = MODx.load({
+                xtype: 'batcher-window-filter-info'
+            });
+        }
+        this.filterInfoWindow.show(e.target);
+        return true;
     }
 });
 Ext.reg('batcher-grid-resource',Batcher.grid.Resources);
@@ -666,7 +683,6 @@ Batcher.window.ChangeAuthors = function(config) {
 Ext.extend(Batcher.window.ChangeAuthors,MODx.Window);
 Ext.reg('batcher-window-change-authors',Batcher.window.ChangeAuthors);
 
-
 Batcher.window.ChangeDates = function(config) {
     config = config || {};
     Ext.applyIf(config,{
@@ -728,3 +744,28 @@ Batcher.window.ChangeDates = function(config) {
 };
 Ext.extend(Batcher.window.ChangeDates,MODx.Window);
 Ext.reg('batcher-window-change-dates',Batcher.window.ChangeDates);
+
+Batcher.window.FilterInfo = function(config) {
+    config = config || {};
+    Ext.applyIf(config,{
+        title: _('batcher.filter.advanced')
+        ,modal: true
+        ,width: 600
+        ,cls: 'batcher-info-window'
+        ,fields: [{
+        //     html: '<h2>'+_('batcher.filter.advanced')+'</h2>'
+        //     ,border: false
+        //     ,cls: 'modx-page-header'
+        // },{
+            html: '<div><p>' + _('batcher.filter.advanced.desc') + '</p></div>'
+            , border: true
+            , style: {
+                padding: '5px 0 10px 0'
+            }
+        }]
+        ,buttons: false
+    });
+    Batcher.window.FilterInfo.superclass.constructor.call(this,config);
+};
+Ext.extend(Batcher.window.FilterInfo,MODx.Window);
+Ext.reg('batcher-window-filter-info',Batcher.window.FilterInfo);
