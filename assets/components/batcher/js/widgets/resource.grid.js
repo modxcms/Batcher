@@ -185,11 +185,11 @@ Batcher.grid.Resources = function(config) {
             ,store: new Ext.data.SimpleStore({
                         data: [
                             ['=', '='],
-                            ['≠', '≠'],
+                            ['!=', '≠'],
                             ['>', '>'],
                             ['<', '<'],
-                            ['≥', '≥'],
-                            ['≤', '≤'],
+                            ['>=', '≥'],
+                            ['<=', '≤'],
                             ['IN', 'IN'],
                             ['LIKE', 'LIKE'],
                             ['BETWEEN', 'BETWEEN'],
