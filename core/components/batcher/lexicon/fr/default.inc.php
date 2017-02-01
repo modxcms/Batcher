@@ -92,3 +92,15 @@ $_lang['batcher.unrichtext'] = 'Éditeur richtext désactivé';
 $_lang['batcher.unsearchable'] = 'Non cherchable';
 $_lang['batcher.user_err_nf'] = 'Utilisateur non trouvé.';
 
+$_lang['batcher.permanentdelete'] = 'Permanent delete';
+$_lang['batcher.permanentdelete.title'] = 'Permantently delete resources?';
+$_lang['batcher.permanentdelete.message'] = 'Are you sure that you want to permanently 
+delete all selected resources? This cannot be undone.';
+
+$_lang['batcher.resources.all'] = 'All resources';
+$_lang['batcher.resources.published'] = 'Published';
+$_lang['batcher.resources.unpublished'] = 'Unpublished';
+$_lang['batcher.resources.deleted'] = 'Deleted';
+
+$_lang['batcher.elements'] = 'Elements';
+$_lang['batcher.elements.intro_msg'] = 'Perform batch actions on elements here.';

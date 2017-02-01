@@ -220,9 +220,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         Ext.getCmp('batcher_resource_context').reset();
         Ext.getCmp('batcher_resource_search').reset();
         if (Ext.getCmp('modx-resource-advanced-filter')) {
-            Ext.getCmp('batcher_filter_field').reset();
-            Ext.getCmp('batcher_filter_type').reset();
-            Ext.getCmp('batcher_filter_value').reset();
+            Ext.getCmp('modx-resource-advanced-filter').destroy();
         }
         this.getBottomToolbar().changePage(1);
         this.refresh();
