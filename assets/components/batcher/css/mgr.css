@@ -18,3 +18,22 @@
 .batcher-grid .batcher-deleted, .batcher-grid .batcher-deleted span, .batcher-grid .batcher-deleted a {
     color: red !important;
 }
+
+.batcher-btn-small {
+    height: 24px;
+    line-height: 18px !important;
+    padding: 0 5px;
+    box-shadow: none;
+    color: #3697cd;
+}
+.batcher-btn-small button {
+    font-size: 12px;
+}
+.batcher-btn-small:hover {
+    background-color: transparent;
+    box-shadow: none;
+}
+.batcher-btn-small:hover button {
+    color: #3697cd;
+    text-decoration: underline;
+}

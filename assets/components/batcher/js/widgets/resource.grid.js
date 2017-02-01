@@ -1,4 +1,4 @@
-
+Ext.QuickTips.init();
 Batcher.grid.Resources = function(config) {
     config = config || {};
     this.sm = new Ext.grid.CheckboxSelectionModel();
@@ -99,7 +99,7 @@ Batcher.grid.Resources = function(config) {
             ,valueField: 'value'
             ,displayField: 'text'
             ,mode: "local"
-            ,emptyText: _('batcher.resources.all')
+            ,emptyText: _('batcher.filter_by_status')
              ,listeners: {
                  'select': {fn:this.filterResources,scope:this}
              }
@@ -125,71 +125,28 @@ Batcher.grid.Resources = function(config) {
                 'select': {fn:this.filterContext,scope:this}
             }
         },{
-            xtype: 'modx-combo'
-            ,name: 'filter_field'
-            ,id: 'filter_field'
-            ,fieldLabel: 'Site filters'
-            ,url: Batcher.config.connector_url
-            ,fields: ['key', 'value']
-            ,valueField: 'key'
-            ,displayField: 'value'
-            ,baseParams: {
-                action: 'mgr/filters/getlist'
-            }
-            ,listeners:{
-                change: function(){
-                    // Ext.getCmp('application').baseParams.parent = this.getValue();
-                    // Ext.getCmp('application').store.load();
-                    
-                    //Ext.getCmp('application').setDisabled(false);
-                    // Ext.getCmp('pdfgenerator-panel-update').addToGrid(this, 'add');
-                }
-            }
-            ,emptyValue: 0
-        },{
-            xtype: 'modx-combo'
-            ,name: 'filter_type'
-            ,id: 'filter_type'
-            ,emptyText: 'filter Type'
-            ,store: new Ext.data.SimpleStore({
-                        data: [
-                            ['=', '='],
-                            ['!=', '≠'],
-                            ['>', '>'],
-                            ['<', '<'],
-                            ['>=', '≥'],
-                            ['<=', '≤'],
-                            ['IN', 'IN'],
-                            ['LIKE', 'LIKE'],
-                            ['BETWEEN', 'BETWEEN'],
-                            ['IS NULL', 'IS NULL'],
-                            ['IS NOT NULL', 'IS NOT NULL']
-                        ],
-                        id: 'id',
-                        fields: ["value", "text"]
-                    })
-            ,valueField: 'value'
-            ,displayField: 'text'
-            ,mode: "local"
-        },{
             xtype: 'textfield'
-            ,name: 'filter_value'
-            ,id: 'filter_value'
+            ,name: 'search'
+            ,width: 140
+            ,id: 'batcher-search'
             ,emptyText: _('search')
-        },{
-            xtype: 'button'
-            ,id: 'batcher-resource-apply-filter'
-            ,text: 'Filter'
-            ,listeners: {
-                'click': {fn: this.applyFilter, scope: this}
-            }
         },{
             xtype: 'button'
             ,id: 'batcher-resource-filter-clear'
             ,text: '<i class="icon icon-times"></i>'
+            ,tooltip: 'Clear all filters'
             ,listeners: {
                 click: {
                     fn: this.clearFilter, scope: this
+                }
+            }
+        },{
+            xtype: 'button'
+            ,cls: 'batcher-btn-small'
+            ,text: 'Advanced filter'
+            ,listeners: {
+                click: {
+                    fn: this.toggleAdvancedFilter, scope: this
                 }
             }
         }]
@@ -211,7 +168,6 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         if(cb.getValue() == 1){
             field = 'published';
             value = 1;
-
         }   
         if(cb.getValue() == 2){
             field = 'published';
@@ -530,6 +486,79 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
             ,scope: this
         });
         return bm;
+    }
+    ,toggleAdvancedFilter: function() {
+        var toolbar = this.getTopToolbar();
+        if (Ext.getCmp('modx-resource-advanced-filter')) {
+            Ext.getCmp('modx-resource-advanced-filter').destroy();
+            return;
+        }
+        this.advancedBar = new Ext.Toolbar({
+            renderTo: this.tbar
+            ,id: 'modx-resource-advanced-filter'
+            ,items: [{
+                xtype: 'modx-combo'
+                ,name: 'filter_field'
+                ,id: 'filter_field'
+                ,width: 240
+                ,emptyText: _('batcher.filter.field')
+                ,fieldLabel: 'Site filters'
+                ,url: Batcher.config.connector_url
+                ,fields: ['key', 'value']
+                ,valueField: 'key'
+                ,displayField: 'value'
+                ,baseParams: {
+                    action: 'mgr/filters/getlist'
+                }
+                ,listeners:{
+                    change: function(){
+
+                    }
+                }
+                ,emptyValue: 0
+            },{
+                xtype: 'modx-combo'
+                ,name: 'filter_type'
+                ,id: 'filter_type'
+                ,width: 160
+                ,emptyText: _('batcher.filter.type')
+                ,store: new Ext.data.SimpleStore({
+                    data: [
+                        ['=', '='],
+                        ['!=', '≠'],
+                        ['>', '>'],
+                        ['<', '<'],
+                        ['>=', '≥'],
+                        ['<=', '≤'],
+                        ['IN', 'IN'],
+                        ['LIKE', 'LIKE'],
+                        ['BETWEEN', 'BETWEEN'],
+                        ['IS NULL', 'IS NULL'],
+                        ['IS NOT NULL', 'IS NOT NULL']
+                    ],
+                    id: 'id',
+                    fields: ["value", "text"]
+                })
+                ,valueField: 'value'
+                ,displayField: 'text'
+                ,mode: "local"
+            },{
+                xtype: 'textfield'
+                ,name: 'filter_value'
+                ,id: 'filter_value'
+                ,width: 240
+                ,emptyText: _('batcher.filter.value')
+            },{
+                xtype: 'button'
+                ,id: 'batcher-resource-apply-filter'
+                ,text: 'Filter'
+                ,cls:'primary-button'
+                ,listeners: {
+                    'click': {fn: this.applyFilter, scope: this}
+                }
+            }]
+        });
+        console.log(toolbar);
     }
 });
 Ext.reg('batcher-grid-resource',Batcher.grid.Resources);
