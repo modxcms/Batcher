@@ -66,9 +66,13 @@ class BatcherResourceGetListProcessor extends modObjectGetListProcessor
                     break;
             }
 
-            $c->where([
-                $filterField . ':'. $filterType => $filterValue
-            ]);
+            $filterQuery = [$filterField . ':' . $filterType => $filterValue];
+
+            if ($filterType === 'BETWEEN' && count($filterValue) === 2) {
+                $filterQuery = $this->classKey . '.' . $filterField . ' BETWEEN ' . $filterValue[0] . ' AND ' . $filterValue[1];
+            }
+
+            $c->where($filterQuery);
         }
 
         if (!empty($search)) {
