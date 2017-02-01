@@ -27,7 +27,7 @@
  * @package batcher
  * @subpackage processors
  */
-/* setup default properties */
+
 class BatcherResourceGetListProcessor extends modObjectGetListProcessor
 {
     public $classKey = 'modResource';
@@ -38,43 +38,73 @@ class BatcherResourceGetListProcessor extends modObjectGetListProcessor
 
     public function prepareQueryBeforeCount(xPDOQuery $c)
     {
+        $search      = $this->getProperty('search');
+        $template    = $this->getProperty('template');
+        $contextKey  = $this->getProperty('context_key');
+        $published   = $this->getProperty('published');
+        $deleted     = $this->getProperty('deleted');
+        $filterField = $this->getProperty('filter_field');
+        $filterType  = $this->getProperty('filter_type');
+        $filterValue = $this->getProperty('filter_value');
 
         $c->leftJoin('modTemplate', 'Template');
-        $search = $this->getProperty('search');
+
+        if ($filterField) {
+            switch ($filterType) {
+                case 'BETWEEN':
+                case 'IN':
+                case 'NOT IN':
+                    $filterValue = explode(',', $filterValue);
+                    break;
+                case 'IS NULL':
+                    $filterType  = 'IS';
+                    $filterValue = null;
+                    break;
+                case 'IS NOT NULL':
+                    $filterType  = 'IS NOT';
+                    $filterValue = null;
+                    break;
+            }
+
+            $c->where([
+                $filterField . ':'. $filterType => $filterValue
+            ]);
+        }
+
         if (!empty($search)) {
-            $c->where(array(
-                'pagetitle:LIKE' => '%'.$search.'%',
-                'OR:description:LIKE' => '%'.$search.'%',
-                'OR:content:LIKE' => '%'.$search.'%',
-                'OR:id:LIKE' => '%'.$search.'%',
-            ));
+            $c->where([
+                'pagetitle:LIKE'      => '%' . $search . '%',
+                'OR:longtitle:LIKE'   => '%' . $search . '%',
+                'OR:description:LIKE' => '%' . $search . '%',
+                'OR:content:LIKE'     => '%' . $search . '%',
+                'OR:introtext:LIKE'   => '%' . $search . '%',
+                'OR:alias:LIKE'       => '%' . $search . '%',
+                'OR:id:='             => $search
+            ]);
         }
-        $template = $this->getProperty('template');
+
         if (!empty($template)) {
-            $c->where(array(
-                'template' => $template,
-            ));
+            $c->where([
+                'template' => $template
+            ]);
         }
 
-        $contextKey = $this->getProperty('context_key');
         if (!empty($contextKey)) {
-            $c->where(array(
-                'context_key' => $contextKey,
-            ));
-        }
-        
-        $published = $this->getProperty('published');
-        if (!empty($published) OR $published == '0') {
-            $c->where(array(
-                'published' => $published,
-            ));
+            $c->where([
+                'context_key' => $contextKey
+            ]);
         }
 
-        $deleted = $this->getProperty('deleted');
+        if (!empty($published) || $published === '0') {
+            $c->where([
+                'published' => $published
+            ]);
+        }
+
         if (!empty($deleted)) {
-            $c->where(array(
-                'deleted' => $deleted,
-            ));
+            $c->where([
+                'deleted' => $deleted
+            ]);
         }
 
         return $c;
@@ -82,7 +112,10 @@ class BatcherResourceGetListProcessor extends modObjectGetListProcessor
 
     public function prepareQueryAfterCount(xPDOQuery $c)
     {
-        $c->select(array('modResource.*','Template.templatename'));
+        $c->select([
+            'modResource.*',
+            'Template.templatename'
+        ]);
        
         return $c;
     }
@@ -90,9 +123,12 @@ class BatcherResourceGetListProcessor extends modObjectGetListProcessor
     public function prepareRow(xPDOObject $object)
     {
         $objectArray = $object->toArray();
-        $objectArray['hidemenu'] = (boolean)$objectArray['hidemenu'];
+        $objectArray['hidemenu'] = (boolean) $objectArray['hidemenu'];
+
         unset($objectArray['content']);
+
         return $objectArray;
     }
 }
+
 return 'BatcherResourceGetListProcessor';
