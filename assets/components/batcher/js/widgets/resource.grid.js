@@ -84,8 +84,9 @@ Batcher.grid.Resources = function(config) {
             ,menu: this.getBatchMenu()
         },'->',{
             xtype: 'modx-combo'
-            ,name: 'resource-status'
-            ,id: 'resource-status'
+            ,name: 'status'
+            ,id: 'batcher_resource_status'
+            ,autoWidth: true
             ,store: new Ext.data.SimpleStore({
                         data: [
                             [0, _('batcher.resources.all')],
@@ -106,7 +107,7 @@ Batcher.grid.Resources = function(config) {
         },{
             xtype: 'modx-combo-template'
             ,name: 'template'
-            ,id: 'batcher-template'
+            ,id: 'batcher_resource_template'
             ,baseParams: {
                 action: 'element/template/getList'
                 ,combo: '1'
@@ -119,7 +120,7 @@ Batcher.grid.Resources = function(config) {
         },{
             xtype: 'modx-combo-context'
             ,name: 'context'
-            ,id: 'batcher-context'
+            ,id: 'batcher_resource_context'
             ,emptyText: _('batcher.filter_by_context')
             ,listeners: {
                 'select': {fn:this.filterContext,scope:this}
@@ -127,26 +128,25 @@ Batcher.grid.Resources = function(config) {
         },{
             xtype: 'textfield'
             ,name: 'search'
-            ,width: 140
-            ,id: 'batcher-search'
-            ,emptyText: _('search')
+            ,width: 180
+            ,id: 'batcher_resource_search'
+            ,emptyText: _('search_ellipsis')
         },{
             xtype: 'button'
-            ,id: 'batcher-resource-filter-clear'
-            ,text: '<i class="icon icon-times"></i>'
-            ,tooltip: 'Clear all filters'
+            ,cls: 'batcher-btn-link'
+            ,text: '<i class="icon icon-filter"></i>&nbsp;'+_('batcher.filter.advanced')
             ,listeners: {
                 click: {
-                    fn: this.clearFilter, scope: this
+                    fn: this.toggleAdvancedFilter, scope: this
                 }
             }
         },{
             xtype: 'button'
-            ,cls: 'batcher-btn-small'
-            ,text: 'Advanced filter'
+            ,cls: 'batcher-btn-link'
+            ,text: '<i class="icon icon-times"></i>&nbsp;'+_('batcher.filter.clear')
             ,listeners: {
                 click: {
-                    fn: this.toggleAdvancedFilter, scope: this
+                    fn: this.clearFilter, scope: this
                 }
             }
         }]
@@ -198,11 +198,11 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
     }
     ,applyFilter: function() {
         /*
-         * Get the values of comboboxes and search field and do search.
+         * Get the values of all the filter options and perform the search.
          */
-        var filterField = Ext.getCmp('filter_field').getValue();
-        var filterType = Ext.getCmp('filter_type').getValue();
-        var filterValue = Ext.getCmp('filter_value').getValue();
+        var filterField = Ext.getCmp('batcher_filter_field').getValue();
+        var filterType = Ext.getCmp('batcher_filter_type').getValue();
+        var filterValue = Ext.getCmp('batcher_filter_value').getValue();
 
         this.getStore().setBaseParam('filter_field',filterField);
         this.getStore().setBaseParam('filter_type',filterType);
@@ -215,17 +215,22 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         this.getStore().baseParams = {
             action: 'mgr/resource/getList'
         };
-        Ext.getCmp('batcher-resource-search').reset();
-        Ext.getCmp('batcher-template').reset();
-        Ext.getCmp('resource-status').reset();
-        Ext.getCmp('batcher-context').reset();
+        Ext.getCmp('batcher_resource_status').reset();
+        Ext.getCmp('batcher_resource_template').reset();
+        Ext.getCmp('batcher_resource_context').reset();
+        Ext.getCmp('batcher_resource_search').reset();
+        if (Ext.getCmp('modx-resource-advanced-filter')) {
+            Ext.getCmp('batcher_filter_field').reset();
+            Ext.getCmp('batcher_filter_type').reset();
+            Ext.getCmp('batcher_filter_value').reset();
+        }
         this.getBottomToolbar().changePage(1);
         this.refresh();
     }
     ,_renderUrl: function(v,md,rec) {
         return '<a href="'+rec.data.url+'" target="_blank">'+rec.data.pagetitle+'</a>';
     }
-    ,_showMenu: function(g,ri,e) {
+    ,getMenu: function(g,ri,e) {
         e.stopEvent();
         e.preventDefault();
         this.menu.record = this.getStore().getAt(ri).data;
@@ -496,10 +501,10 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         this.advancedBar = new Ext.Toolbar({
             renderTo: this.tbar
             ,id: 'modx-resource-advanced-filter'
-            ,items: [{
+            ,items: ['->',{
                 xtype: 'modx-combo'
                 ,name: 'filter_field'
-                ,id: 'filter_field'
+                ,id: 'batcher_filter_field'
                 ,width: 240
                 ,emptyText: _('batcher.filter.field')
                 ,fieldLabel: 'Site filters'
@@ -519,7 +524,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
             },{
                 xtype: 'modx-combo'
                 ,name: 'filter_type'
-                ,id: 'filter_type'
+                ,id: 'batcher_filter_type'
                 ,width: 160
                 ,emptyText: _('batcher.filter.type')
                 ,store: new Ext.data.SimpleStore({
@@ -545,7 +550,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
             },{
                 xtype: 'textfield'
                 ,name: 'filter_value'
-                ,id: 'filter_value'
+                ,id: 'batcher_filter_value'
                 ,width: 240
                 ,emptyText: _('batcher.filter.value')
             },{
@@ -558,19 +563,9 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
                 }
             }]
         });
-        console.log(toolbar);
     }
 });
 Ext.reg('batcher-grid-resource',Batcher.grid.Resources);
-
-// grid.getTopToolbar().insert(0, new Ext.Toolbar({
-//     items: [
-//         new Ext.Button({
-//             text: 'Added button'
-//         })
-//     ]
-// }));
-
 
 Batcher.window.ChangeParent = function(config) {
     config = config || {};

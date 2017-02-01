@@ -52,7 +52,7 @@ Batcher.grid.Elements = function(config) {
         },'->',{
             xtype: 'modx-combo'
             ,name: 'element-type'
-            ,id: 'element-type'
+            ,id: 'batcher-element-type'
             ,store: new Ext.data.SimpleStore({
                         data: [
                             ['modTemplate', _('template')],
@@ -68,7 +68,7 @@ Batcher.grid.Elements = function(config) {
             ,valueField: 'value'
             ,displayField: 'text'
             ,mode: "local"
-            ,emptyText: 'Element type'
+            ,emptyText: _('batcher.filter.element_type')
             ,listeners: {
                 'select': {fn:this.filterType,scope:this}
             }
@@ -76,7 +76,8 @@ Batcher.grid.Elements = function(config) {
             xtype: 'textfield'
             ,name: 'search'
             ,id: 'batcher-element-search'
-            ,emptyText: _('search')
+            ,width: '180'
+            ,emptyText: _('search_ellipsis')
             ,listeners: {
                 'change': {fn:this.search,scope:this}
                 ,'render': {fn:function(tf) {
@@ -87,10 +88,12 @@ Batcher.grid.Elements = function(config) {
             }
         },{
             xtype: 'button'
-            ,id: 'batcher-element-filter-clear'
-            ,text: _('filter_clear')
+            ,cls: 'batcher-btn-link'
+            ,text: '<i class="icon icon-times"></i>&nbsp;'+_('batcher.filter.clear')
             ,listeners: {
-                'click': {fn: this.clearFilter, scope: this}
+                click: {
+                    fn: this.clearFilter, scope: this
+                }
             }
         }]
     });
@@ -111,23 +114,19 @@ Ext.extend(Batcher.grid.Elements,MODx.grid.Grid,{
         this.getBottomToolbar().changePage(1);
         this.refresh();
     }
-    ,filterTemplate: function(cb,nv,ov) {
-        this.getStore().setBaseParam('element',cb.getValue());
-        this.getBottomToolbar().changePage(1);
-        this.refresh();
-    }
     ,clearFilter: function() {
-    	this.getStore().baseParams = {
+        this.getStore().baseParams = {
             action: 'mgr/element/getList'
-    	};
+        };
+        Ext.getCmp('batcher-element-type').reset();
         Ext.getCmp('batcher-element-search').reset();
-    	this.getBottomToolbar().changePage(1);
+        this.getBottomToolbar().changePage(1);
         this.refresh();
     }
     ,_renderUrl: function(v,md,rec) {
         return '<a href="'+rec.data.url+'" target="_blank">'+rec.data.name+'</a>';
     }
-    ,_showMenu: function(g,ri,e) {
+    ,getMenu: function(g,ri,e) {
         e.stopEvent();
         e.preventDefault();
         this.menu.record = this.getStore().getAt(ri).data;

@@ -19,21 +19,30 @@
     color: red !important;
 }
 
-.batcher-btn-small {
+.batcher-btn-link {
     height: 24px;
     line-height: 18px !important;
     padding: 0 5px;
     box-shadow: none;
     color: #3697cd;
 }
-.batcher-btn-small button {
-    font-size: 12px;
+.batcher-btn-link button {
+    font-size: 13px;
 }
-.batcher-btn-small:hover {
-    background-color: transparent;
-    box-shadow: none;
+.batcher-btn-link:hover,
+.batcher-btn-link:focus,
+.batcher-btn-link:active,
+.batcher-btn-link.x-btn-focus {
+    background-color: transparent !important;
+    box-shadow: none !important;
 }
-.batcher-btn-small:hover button {
-    color: #3697cd;
-    text-decoration: underline;
+.batcher-btn-link:hover button,
+.batcher-btn-link:focus button,
+.batcher-btn-link:active button,
+.batcher-btn-link:hover button i,
+.batcher-btn-link:focus button i,
+.batcher-btn-link:active button i,
+.batcher-btn-link.x-btn-focus button {
+    color: #3697cd !important;
+    text-decoration: underline !important;
 }
