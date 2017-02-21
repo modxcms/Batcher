@@ -7,6 +7,7 @@ Batcher 2.0.0
 - Added possibility to filter by context
 - Layout is changed
 - Added advanced filter
+- Added Dutch translation
 
 Batcher 1.2.0
 ================================================================
