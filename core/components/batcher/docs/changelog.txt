@@ -1,4 +1,12 @@
-Changelog for Batcher.
+---------------------
+Changelog for Batcher
+---------------------
+Batcher 2.0.0
+================================================================
+- Added possibility to set the combobox to 'empty'
+- Added possibility to filter by context
+- Layout is changed
+- Added advanced filter
 
 Batcher 1.2.0
 ================================================================
