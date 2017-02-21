@@ -65,7 +65,7 @@ Field: `pagetitle` - Operator: `LIKE` - Value: `page%` will give all resources w
 ';
 $_lang['batcher.filter.element_type'] = 'Element type';
 $_lang['batcher.hidemenu'] = 'Hidden from menus';
-$_lang['batcher.intro_msg'] = 'Here you can perform batch actions on your resources.';
+$_lang['batcher.intro_msg'] = 'Perform batch actions on your resources here. Start by selecting the resources you would like to edit.';
 $_lang['batcher.menu_desc'] = 'Execute batch actions on your resources and elements.';
 $_lang['batcher.parent'] = 'Parent';
 $_lang['batcher.parent_err_nf'] = 'Parent not found.';
@@ -75,7 +75,7 @@ $_lang['batcher.published'] = 'Published';
 $_lang['batcher.publishedby'] = 'Published by';
 $_lang['batcher.resources'] = 'Resources';
 $_lang['batcher.resources_affect'] = 'This will affect the following resources:';
-$_lang['batcher.resources_err_ns'] = 'Please select some resources to perform that action on!';
+$_lang['batcher.resources_err_ns'] = 'Please select one or more resources to perform that action on first!';
 $_lang['batcher.richtext'] = 'Richtext enabled';
 $_lang['batcher.searchable'] = 'Searchable';
 $_lang['batcher.context'] = 'Context';
@@ -85,8 +85,8 @@ $_lang['batcher.template_err_ns'] = 'Template not specified.';
 $_lang['batcher.template.tvdefaults.intro_msg'] = 'Set the default values of any template variables for this template. Check which TVs you would like to change.';
 $_lang['batcher.template.tvs.intro_msg'] = 'Sets the values for all resource template variable values for this template. Check which TVs you would like to change.';
 $_lang['batcher.templates'] = 'Templates';
-$_lang['batcher.templates_err_ns'] = 'Please select some templates to perform that action on!';
-$_lang['batcher.templates.intro_msg'] = 'Here you can perform batch actions on your templates.';
+$_lang['batcher.templates_err_ns'] = 'Please select one or more templates to perform that action on first!';
+$_lang['batcher.templates.intro_msg'] = 'Perform batch actions on your templates here. Start by selecting the templates you would like to edit.';
 $_lang['batcher.tvs'] = 'Template variables';
 $_lang['batcher.tvs_err_ns'] = 'No template variables specified!';
 $_lang['batcher.toggle'] = 'Toggle';
@@ -100,13 +100,11 @@ $_lang['batcher.unsearchable'] = 'Unsearchable';
 $_lang['batcher.user_err_nf'] = 'User not found.';
 $_lang['batcher.permanentdelete'] = 'Permanent delete';
 $_lang['batcher.permanentdelete.title'] = 'Permantently delete resources?';
-$_lang['batcher.permanentdelete.message'] = 'Are you sure that you want to permanently 
-delete all selected resources? This cannot be undone.';
-
+$_lang['batcher.permanentdelete.message'] = 'Are you sure that you want to delete all selected resources permanently? This cannot be undone.';
 $_lang['batcher.resources.all'] = 'All resources';
 $_lang['batcher.resources.published'] = 'Published';
 $_lang['batcher.resources.unpublished'] = 'Unpublished';
 $_lang['batcher.resources.deleted'] = 'Deleted';
 
 $_lang['batcher.elements'] = 'Elements';
-$_lang['batcher.elements.intro_msg'] = 'Here you can perform batch actions on different sorts of elements.';
+$_lang['batcher.elements.intro_msg'] = 'Perform batch actions on your elements here. Start by selecting the elements you would like to edit.';
