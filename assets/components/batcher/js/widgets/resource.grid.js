@@ -568,7 +568,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
                 ,listeners: {
                     'render': {fn:function(tf) {
                         tf.getEl().addKeyListener(Ext.EventObject.ENTER,function() {
-                            this.search(tf);
+                            this.applyFilter(tf);
                         },this);
                     },scope:this}
                 }
