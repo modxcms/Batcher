@@ -16,7 +16,6 @@ Batcher.panel.Home = function(config) {
             ,cls: 'main-wrapper'
         }]
     });
-    console.log(MODx.perm.element_tree);
     if (MODx.perm.element_tree) {
         tabItems.push({
             title: _('batcher.elements')
