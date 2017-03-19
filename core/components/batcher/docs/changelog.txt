@@ -3,11 +3,12 @@ Changelog for Batcher
 ---------------------
 Batcher 2.0.0
 ================================================================
-- Added possibility to set the combobox to 'empty'
-- Added possibility to filter by context
-- Layout is changed
-- Added advanced filter
+- Added advanced filter option to Resources tab
+- Added empty value to template filter combobox
+- Added filter by context
+- Templates tab is replaced by Elements tab
 - Added Dutch translation
+- Removed functionality to change TV values
 
 Batcher 1.2.0
 ================================================================
