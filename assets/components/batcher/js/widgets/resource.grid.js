@@ -190,11 +190,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         this.refresh();
     }
     ,filterTemplate: function(cb,nv,ov) {
-        if(cb.getValue() == 0){
-            this.getStore().setBaseParam('template', null);
-        } else {
-            this.getStore().setBaseParam('template', cb.getValue());
-        }
+        this.getStore().setBaseParam('template', cb.getValue());
         this.getBottomToolbar().changePage(1);
         this.refresh();
     }

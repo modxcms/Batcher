@@ -87,7 +87,7 @@ class BatcherResourceGetListProcessor extends modObjectGetListProcessor
             ]);
         }
 
-        if (!empty($template)) {
+        if (isset($template)) {
             $c->where([
                 'template' => $template
             ]);
