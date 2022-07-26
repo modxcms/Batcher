@@ -65,6 +65,8 @@ Veld: `pagetitle` - Operator: `LIKE` - Waarde: `page%` geeft je alle bronnen wie
 $_lang['batcher.filter.element_type'] = 'Element type';
 $_lang['batcher.hidemenu'] = 'Verborgen in menu\'s';
 $_lang['batcher.intro_msg'] = 'Hier kun je batch acties uitvoeren op je bronnen.';
+$_lang['batcher.isfolder'] = 'Is container';
+$_lang['batcher.isnotfolder'] = 'Is geen container';
 $_lang['batcher.menu_desc'] = 'Voer batch acties uit op je bronnen en elementen.';
 $_lang['batcher.parent'] = 'Parent';
 $_lang['batcher.parent_err_nf'] = 'Parent niet gevonden.';

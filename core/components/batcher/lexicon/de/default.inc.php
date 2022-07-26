@@ -66,6 +66,8 @@ Feld: `pagetitle` - Operator: `LIKE` - Wert: `Seite%` listet alle Ressourcen mit
 $_lang['batcher.filter.element_type'] = 'Element-Typ';
 $_lang['batcher.hidemenu'] = 'Nicht in Menüs anzeigen';
 $_lang['batcher.intro_msg'] = 'Hier können Sie einige Einstellungen für mehrere Ressourcen gleichzeitig bearbeiten. Beginnen Sie, indem Sie die Ressourcen auswählen, die Sie bearbeiten möchten.';
+$_lang['batcher.isfolder'] = 'Is container';
+$_lang['batcher.isnotfolder'] = 'Is not container';
 $_lang['batcher.menu_desc'] = 'Bearbeiten Sie mehrere Ressourcen oder Elemente gleichzeitig.';
 $_lang['batcher.parent'] = 'Eltern-Ressource';
 $_lang['batcher.parent_err_nf'] = 'Eltern-Ressource nicht gefunden.';

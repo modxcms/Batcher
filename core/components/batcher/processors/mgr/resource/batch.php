@@ -134,6 +134,20 @@ foreach ($resourceIds as $resourceId) {
                 continue;
             }
             break;
+        case 'isfolder':
+            if ($resource->get('isfolder') == false) {
+                $resource->set('isfolder',true);
+            } else {
+                continue;
+            }
+            break;
+        case 'isnotfolder':
+            if ($resource->get('isfolder') == true) {
+                $resource->set('isfolder',false);
+            } else {
+                continue;
+            }
+            break;
     }
 
 
