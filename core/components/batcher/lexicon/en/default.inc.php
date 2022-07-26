@@ -66,6 +66,8 @@ Field: `pagetitle` - Operator: `LIKE` - Value: `page%` will give all resources w
 $_lang['batcher.filter.element_type'] = 'Element type';
 $_lang['batcher.hidemenu'] = 'Hidden from menus';
 $_lang['batcher.intro_msg'] = 'Perform batch actions on your resources here. Start by selecting the resources you would like to edit.';
+$_lang['batcher.isfolder'] = 'Is container';
+$_lang['batcher.isnotfolder'] = 'Is not container';
 $_lang['batcher.menu_desc'] = 'Execute batch actions on your resources and elements.';
 $_lang['batcher.parent'] = 'Parent';
 $_lang['batcher.parent_err_nf'] = 'Parent not found.';
