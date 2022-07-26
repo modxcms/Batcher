@@ -408,7 +408,20 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
                         this.batchAction('unpublish',btn,e);
                     }
                     ,scope: this
-                },'-',{
+                }, '-',{
+                  text: _('batcher.isfolder')
+                  ,handler: function(btn,e) {
+                      this.batchAction('isfolder',btn,e);
+                  }
+                  ,scope: this
+                },{
+                  text: _('batcher.isnotfolder')
+                  ,handler: function(btn,e) {
+                      this.batchAction('isnotfolder',btn,e);
+                  }
+                  ,scope: this
+                }, '-',        
+                {
                     text: _('batcher.hidemenu')
                     ,handler: function(btn,e) {
                         this.batchAction('hidemenu',btn,e);
