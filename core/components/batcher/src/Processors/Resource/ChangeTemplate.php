@@ -27,29 +27,50 @@
  * @package batcher
  * @subpackage processors
  */
-if (!$modx->hasPermission('save_document')) return $modx->error->failure($modx->lexicon('access_denied'));
+namespace Batcher\Processors\Resource;
 
-if (empty($scriptProperties['resources'])) {
-    return $modx->error->failure($modx->lexicon('batcher.resources_err_ns'));
-}
-/* get parent */
-if (empty($scriptProperties['template'])) {
-    return $modx->error->failure($modx->lexicon('batcher.template_err_ns'));
-}
-$template = $modx->getObject('modTemplate',$scriptProperties['template']);
-if (empty($template)) return $modx->error->failure($modx->lexicon('batcher.template_err_nf'));
+use MODX\Revolution\Processors\Processor;
+use MODX\Revolution\modResource;
+use MODX\Revolution\modTemplate;
 
-/* iterate over resources */
-$resourceIds = explode(',',$scriptProperties['resources']);
-foreach ($resourceIds as $resourceId) {
-    $resource = $modx->getObject('modResource',$resourceId);
-    if ($resource == null) continue;
+class ChangeTemplate extends Processor
+{
+    public function process()
+    {
+        if (!$this->modx->hasPermission('save_document')) {
+            return $this->failure($this->modx->lexicon('access_denied'));
+        }
 
-    $resource->set('template',$scriptProperties['template']);
+        if (empty($this->properties['resources'])) {
+            return $this->failure($this->modx->lexicon('batcher.resources_err_ns'));
+        }
+        /* get parent */
+        if (empty($this->properties['template'])) {
+            return $this->failure($this->modx->lexicon('batcher.template_err_ns'));
+        }
+        $template = $this->modx->getObject(modTemplate::class, $this->properties['template']);
+        if (empty($template)) {
+            return $this->failure($this->modx->lexicon('batcher.template_err_nf'));
+        }
 
-    if ($resource->save() === false) {
-        
+        /* iterate over resources */
+        $resourceIds = explode(',', $this->properties['resources']);
+        foreach ($resourceIds as $resourceId) {
+            $resource = $this->modx->getObject(modResource::class, $resourceId);
+            if ($resource == null) continue;
+
+            $resource->set('template', $this->properties['template']);
+
+            if ($resource->save() === false) {
+
+            }
+        }
+
+        return $this->success();
+    }
+
+    public function getLanguageTopics()
+    {
+        return ['batcher:default'];
     }
 }
-
-return $modx->error->success();

@@ -4,9 +4,9 @@ Batcher.grid.Resources = function(config) {
     this.sm = new Ext.grid.CheckboxSelectionModel();
 
     Ext.applyIf(config,{
-        url: Batcher.config.connector_url
+        url: MODx.config.connector_url
         ,baseParams: {
-            action: 'mgr/resource/getList'
+            action: 'Batcher\\Processors\\Resource\\GetList'
             ,thread: config.thread
         }
         ,fields: ['id','pagetitle','template','templatename','alias','deleted','published','createdon','editedon','hidemenu','context_key']
@@ -46,12 +46,14 @@ Batcher.grid.Resources = function(config) {
             ,dataIndex: 'published'
             ,sortable: true
             ,editor: { xtype: 'combo-boolean' ,renderer: 'boolean' }
+            ,editable: false
             ,width: 60
         },{
             header: _('batcher.hidemenu')
             ,dataIndex: 'hidemenu'
             ,sortable: true
             ,editor: { xtype: 'combo-boolean' ,renderer: 'boolean' }
+            ,editable: false
             ,width: 60
         },{
             header: _('batcher.editedon')
@@ -175,11 +177,11 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         if(cb.getValue() == 1){
             field = 'published';
             value = 1;
-        }   
+        }
         if(cb.getValue() == 2){
             field = 'published';
             value = '0';
-        }   
+        }
         if(cb.getValue() == 3){
             field = 'deleted';
             value = 1;
@@ -216,7 +218,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
     }
     ,clearFilter: function() {
         this.getStore().baseParams = {
-            action: 'mgr/resource/getList'
+            action: 'Batcher\\Processors\\Resource\\GetList'
         };
         Ext.getCmp('batcher_resource_status').reset();
         Ext.getCmp('batcher_resource_template').reset();
@@ -274,7 +276,7 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         MODx.Ajax.request({
             url: this.config.url
             ,params: {
-                action: 'mgr/resource/batch'
+                action: 'Batcher\\Processors\\Resource\\Batch'
                 ,resources: cs
                 ,batch: act
             }
@@ -296,9 +298,9 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
         MODx.msg.confirm({
             title: _('batcher.permanentdelete.title')
             ,text: _('batcher.permanentdelete.message')
-            ,url: Batcher.config.connector_url
+            ,url: MODx.config.connector_url
             ,params: {
-                action: 'mgr/resource/remove'
+                action: 'Batcher\\Processors\\Resource\\Remove'
                 ,resources: cs
             }
             ,listeners: {
@@ -509,12 +511,12 @@ Ext.extend(Batcher.grid.Resources,MODx.grid.Grid,{
                 ,width: 160
                 ,emptyText: _('batcher.filter.field')
                 ,fieldLabel: 'Site filters'
-                ,url: Batcher.config.connector_url
+                ,url: MODx.config.connector_url
                 ,fields: ['key', 'value']
                 ,valueField: 'key'
                 ,displayField: 'value'
                 ,baseParams: {
-                    action: 'mgr/filters/getlist'
+                    action: 'Batcher\\Processors\\Filters\\GetList'
                 }
                 ,emptyValue: 0
             },{
@@ -603,9 +605,9 @@ Batcher.window.ChangeParent = function(config) {
     config = config || {};
     Ext.applyIf(config,{
         title: _('batcher.change_parent')
-        ,url: Batcher.config.connector_url
+        ,url: MODx.config.connector_url
         ,baseParams: {
-            action: 'mgr/resource/changeparent'
+            action: 'Batcher\\Processors\\Resource\\ChangeParent'
         }
         ,width: 400
         ,fields: [{
@@ -627,9 +629,9 @@ Batcher.window.ChangeTemplate = function(config) {
     config = config || {};
     Ext.applyIf(config,{
         title: _('batcher.change_template')
-        ,url: Batcher.config.connector_url
+        ,url: MODx.config.connector_url
         ,baseParams: {
-            action: 'mgr/resource/changetemplate'
+            action: 'Batcher\\Processors\\Resource\\ChangeTemplate'
         }
         ,width: 400
         ,fields: [{
@@ -653,9 +655,9 @@ Batcher.window.ChangeAuthors = function(config) {
     config = config || {};
     Ext.applyIf(config,{
         title: _('batcher.change_authors')
-        ,url: Batcher.config.connector_url
+        ,url: MODx.config.connector_url
         ,baseParams: {
-            action: 'mgr/resource/changeauthors'
+            action: 'Batcher\\Processors\\Resource\\ChangeAuthors'
         }
         ,width: 400
         ,fields: [{
@@ -690,9 +692,9 @@ Batcher.window.ChangeDates = function(config) {
     config = config || {};
     Ext.applyIf(config,{
         title: _('batcher.change_dates')
-        ,url: Batcher.config.connector_url
+        ,url: MODx.config.connector_url
         ,baseParams: {
-            action: 'mgr/resource/changedates'
+            action: 'Batcher\\Processors\\Resource\\ChangeDates'
         }
         ,width: 500
         ,fields: [{

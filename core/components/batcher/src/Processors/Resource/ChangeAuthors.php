@@ -27,39 +27,58 @@
  * @package batcher
  * @subpackage processors
  */
-if (!$modx->hasPermission('save_document')) return $modx->error->failure($modx->lexicon('access_denied'));
+namespace Batcher\Processors\Resource;
 
-if (empty($scriptProperties['resources'])) {
-    return $modx->error->failure($modx->lexicon('batcher.resources_err_ns'));
-}
+use MODX\Revolution\Processors\Processor;
+use MODX\Revolution\modResource;
+use MODX\Revolution\modUser;
 
-/* validated createdby */
-if (!empty($scriptProperties['createdby'])) {
-    $createdby = $modx->getObject('modUser',$scriptProperties['createdby']);
-    if (empty($createdby)) return $modx->error->failure($modx->lexicon('batcher.user_err_nf'));
-}
-if (!empty($scriptProperties['editedby'])) {
-    $editedby = $modx->getObject('modUser',$scriptProperties['createdby']);
-    if (empty($editedby)) return $modx->error->failure($modx->lexicon('batcher.user_err_nf'));
-}
-if (!empty($scriptProperties['publishedby'])) {
-    $publishedby= $modx->getObject('modUser',$scriptProperties['publishedby']);
-    if (empty($publishedby)) return $modx->error->failure($modx->lexicon('batcher.user_err_nf'));
-}
+class ChangeAuthors extends Processor
+{
+    public function process()
+    {
+        if (!$this->modx->hasPermission('save_document')) {
+            return $this->failure($this->modx->lexicon('access_denied'));
+        }
 
-/* iterate over resources */
-$resourceIds = explode(',',$scriptProperties['resources']);
-foreach ($resourceIds as $resourceId) {
-    $resource = $modx->getObject('modResource',$resourceId);
-    if ($resource == null) continue;
+        if (empty($this->properties['resources'])) {
+            return $this->failure($this->modx->lexicon('batcher.resources_err_ns'));
+        }
 
-    if (!empty($scriptProperties['createdby'])) $resource->set('createdby',$scriptProperties['createdby']);
-    if (!empty($scriptProperties['editedby'])) $resource->set('editedby',$scriptProperties['editedby']);
-    if (!empty($scriptProperties['publishedby'])) $resource->set('publishedby',$scriptProperties['publishedby']);
-    
-    if ($resource->save() === false) {
-        
+        /* validated createdby */
+        if (!empty($this->properties['createdby'])) {
+            $createdby = $this->modx->getObject(modUser::class, $this->properties['createdby']);
+            if (empty($createdby)) return $this->failure($this->modx->lexicon('batcher.user_err_nf'));
+        }
+        if (!empty($this->properties['editedby'])) {
+            $editedby = $this->modx->getObject(modUser::class, $this->properties['editedby']);
+            if (empty($editedby)) return $this->failure($this->modx->lexicon('batcher.user_err_nf'));
+        }
+        if (!empty($this->properties['publishedby'])) {
+            $publishedby = $this->modx->getObject(modUser::class, $this->properties['publishedby']);
+            if (empty($publishedby)) return $this->failure($this->modx->lexicon('batcher.user_err_nf'));
+        }
+
+        /* iterate over resources */
+        $resourceIds = explode(',', $this->properties['resources']);
+        foreach ($resourceIds as $resourceId) {
+            $resource = $this->modx->getObject(modResource::class, $resourceId);
+            if ($resource == null) continue;
+
+            if (!empty($this->properties['createdby'])) $resource->set('createdby', $this->properties['createdby']);
+            if (!empty($this->properties['editedby'])) $resource->set('editedby', $this->properties['editedby']);
+            if (!empty($this->properties['publishedby'])) $resource->set('publishedby', $this->properties['publishedby']);
+
+            if ($resource->save() === false) {
+
+            }
+        }
+
+        return $this->success();
+    }
+
+    public function getLanguageTopics()
+    {
+        return ['batcher:default'];
     }
 }
-
-return $modx->error->success();

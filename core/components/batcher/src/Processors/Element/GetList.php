@@ -27,27 +27,47 @@
  * @package batcher
  * @subpackage processors
  */
-class BatcherTemplateGetListProcessor extends modObjectGetListProcessor {
-    public $classKey = 'modTemplate';
+namespace Batcher\Processors\Element;
+
+use MODX\Revolution\Processors\Model\GetListProcessor;
+use MODX\Revolution\modTemplate;
+use MODX\Revolution\modCategory;
+use xPDO\Om\xPDOQuery;
+use xPDO\Om\xPDOObject;
+
+class GetList extends GetListProcessor
+{
+    public $classKey = modTemplate::class;
     public $defaultSortField = 'id';
     public $defaultSortDirection = 'ASC';
     public $checkListPermission = true;
 
-    public function prepareQueryBeforeCount(xPDOQuery $c) {
-
+    public function prepareQueryBeforeCount(xPDOQuery $c)
+    {
         $search = $this->getProperty('search');
-        $type = $this->getProperty('element-type');
         if (!empty($search)) {
-            $c->where(array(
-                'name:LIKE' => '%'.$search.'%',
-                'OR:description:LIKE' => '%'.$search.'%',
-            ));
+            if ($this->classKey === modCategory::class) {
+                $c->where(array(
+                    'category:LIKE' => '%'.$search.'%'
+                ));
+            } else {
+                $nameField = 'name';
+                if ($this->classKey === modTemplate::class) {
+                    $nameField = 'templatename';
+                }
+
+                $c->where(array(
+                    $nameField.':LIKE' => '%'.$search.'%',
+                    'OR:description:LIKE' => '%'.$search.'%'
+                ));
+            }
         }
 
         return $c;
     }
 
-    public function getData() {
+    public function getData()
+    {
         $data = array();
         $limit = intval($this->getProperty('limit'));
         $start = intval($this->getProperty('start'));
@@ -59,13 +79,28 @@ class BatcherTemplateGetListProcessor extends modObjectGetListProcessor {
 
         $c = $this->modx->newQuery($this->classKey);
         $c = $this->prepareQueryBeforeCount($c);
-        $data['total'] = $this->modx->getCount($this->classKey,$c);
+        $data['total'] = $this->modx->getCount($this->classKey, $c);
         $c = $this->prepareQueryAfterCount($c);
 
         $sortClassKey = $this->getSortClassKey();
-        $sortKey = $this->modx->getSelectColumns($sortClassKey,$this->getProperty('sortAlias',$sortClassKey),'',array($this->getProperty('sort')));
+        $sortAlias = $this->modx->getAlias($sortClassKey);
+
+        $sort = $this->getProperty('sort');
+        if ($sort === 'category_name') {
+            $sort = 'category';
+        }
+        if ($sort === 'name') {
+            if ($sortClassKey === modTemplate::class) {
+                $sort = 'templatename';
+            }
+            if ($sortClassKey === modCategory::class) {
+                $sort = 'category';
+            }
+        }
+        $sortKey = $this->modx->getSelectColumns($sortClassKey, $this->getProperty('sortAlias', $sortAlias), '', [$sort]);
         if (empty($sortKey)) $sortKey = $this->getProperty('sort');
-        $c->sortby($sortKey,$this->getProperty('dir'));
+        $c->sortby($sortKey, $this->getProperty('dir'));
+
         if ($limit > 0) {
             $c->limit($limit,$start);
         }
@@ -78,21 +113,20 @@ class BatcherTemplateGetListProcessor extends modObjectGetListProcessor {
     {
         $objectArray = $object->toArray();
         $objectArray['category_name'] = '-';
-        if ($this->classKey === 'modCategory') {
+        if ($this->classKey === modCategory::class) {
             $objectArray['name'] = $objectArray['category'];
             unset($objectArray['category']);
         } else {
             if ($objectArray['category']) {
-                $category = $this->modx->getObject('modCategory', $objectArray['category']);
+                $category = $this->modx->getObject(modCategory::class, $objectArray['category']);
                 if ($category) {
                     $objectArray['category_name'] = $category->get('category');
                 }
             }
         }
-        if ($this->classKey === 'modTemplate') {
+        if ($this->classKey === modTemplate::class) {
             $objectArray['name'] = $objectArray['templatename'];
         }
         return $objectArray;
     }
 }
-return 'BatcherTemplateGetListProcessor';

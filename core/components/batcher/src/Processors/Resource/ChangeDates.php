@@ -27,26 +27,44 @@
  * @package batcher
  * @subpackage processors
  */
-if (!$modx->hasPermission('save_document')) return $modx->error->failure($modx->lexicon('access_denied'));
+namespace Batcher\Processors\Resource;
 
-if (empty($scriptProperties['resources'])) {
-    return $modx->error->failure($modx->lexicon('batcher.resources_err_ns'));
-}
+use MODX\Revolution\Processors\Processor;
+use MODX\Revolution\modResource;
 
-/* iterate over resources */
-$resourceIds = explode(',',$scriptProperties['resources']);
-foreach ($resourceIds as $resourceId) {
-    $resource = $modx->getObject('modResource',$resourceId);
-    if ($resource == null) continue;
+class ChangeDates extends Processor
+{
+    public function process()
+    {
+        if (!$this->modx->hasPermission('save_document')) {
+            return $this->failure($this->modx->lexicon('access_denied'));
+        }
 
-    if (!empty($scriptProperties['createdon'])) $resource->set('createdon',$scriptProperties['createdon']);
-    if (!empty($scriptProperties['editedon'])) $resource->set('editedon',$scriptProperties['editedon']);
-    if (!empty($scriptProperties['pub_date'])) $resource->set('pub_date',$scriptProperties['pub_date']);
-    if (!empty($scriptProperties['unpub_date'])) $resource->set('unpub_date',$scriptProperties['unpub_date']);
+        if (empty($this->properties['resources'])) {
+            return $this->failure($this->modx->lexicon('batcher.resources_err_ns'));
+        }
 
-    if ($resource->save() === false) {
-        
+        /* iterate over resources */
+        $resourceIds = explode(',', $this->properties['resources']);
+        foreach ($resourceIds as $resourceId) {
+            $resource = $this->modx->getObject(modResource::class, $resourceId);
+            if ($resource == null) continue;
+
+            if (!empty($this->properties['createdon'])) $resource->set('createdon',$this->properties['createdon']);
+            if (!empty($this->properties['editedon'])) $resource->set('editedon',$this->properties['editedon']);
+            if (!empty($this->properties['pub_date'])) $resource->set('pub_date',$this->properties['pub_date']);
+            if (!empty($this->properties['unpub_date'])) $resource->set('unpub_date',$this->properties['unpub_date']);
+
+            if ($resource->save() === false) {
+
+            }
+        }
+
+        return $this->success();
+    }
+
+    public function getLanguageTopics()
+    {
+        return ['batcher:default'];
     }
 }
-
-return $modx->error->success();

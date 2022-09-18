@@ -22,20 +22,38 @@
  * @package batcher
  */
 /**
- * Change dates for multiple resources
+ * Delete multiple resources
  *
  * @package batcher
  * @subpackage processors
  */
-if (!$modx->hasPermission('save_document')) return $modx->error->failure($modx->lexicon('access_denied'));
+namespace Batcher\Processors\Resource;
 
-if (empty($scriptProperties['resources'])) {
-    return $modx->error->failure($modx->lexicon('batcher.resources_err_ns'));
+use MODX\Revolution\Processors\Processor;
+use MODX\Revolution\modResource;
+
+class Remove extends Processor
+{
+    public function process()
+    {
+        if (!$this->modx->hasPermission('save_document')) {
+            return $this->failure($this->modx->lexicon('access_denied'));
+        }
+
+        if (empty($this->properties['resources'])) {
+            return $this->failure($this->modx->lexicon('batcher.resources_err_ns'));
+        }
+
+        $resourceIds = explode(',', $this->properties['resources']);
+        if(is_array($resourceIds)){
+            $this->modx->removeCollection(modResource::class, array("id:IN" => array($this->properties['resources']) ));
+        }
+
+        return $this->success();
+    }
+
+    public function getLanguageTopics()
+    {
+        return ['batcher:default'];
+    }
 }
-
-$resourceIds = explode(',',$scriptProperties['resources']);
-if(is_array($resourceIds)){
-	$modx->removeCollection('modResource', array("id:IN" => array($scriptProperties['resources']) ));
-}
-
-return $modx->error->success();

@@ -1,23 +1,29 @@
 <?php
-class BatcherFilterGetListProcessor extends modObjectGetListProcessor {
+namespace Batcher\Processors\Filters;
 
-	public function getFilters(){
+use MODX\Revolution\Processors\Model\GetListProcessor;
+use MODX\Revolution\modResource;
+
+class GetList extends GetListProcessor
+{
+	public function getFilters()
+    {
 		$filters = array();
 
-		$object = $this->modx->newObject('modResource');
+		$object = $this->modx->newObject(modResource::class);
         $object = $object->toArray();
 
         /*
          * Exclude fields from filter based on system setting.
          */
         $excludeFilters = $this->modx->getOption('batcher.excludefilters');
-        if($excludeFilters){
-        	$excludeArray = explode(',', $excludeFilters);	
+        $excludeArray = [];
+        if ($excludeFilters) {
+        	$excludeArray = explode(',', $excludeFilters);
         }
 
-
         foreach($object as $key => $val){
-        	if($excludeArray && in_array($key, $excludeArray)){
+        	if ($excludeArray && in_array($key, $excludeArray)){
         		continue;
         	}
 
@@ -28,14 +34,12 @@ class BatcherFilterGetListProcessor extends modObjectGetListProcessor {
         }
 
 		return $filters;
-	}	
+	}
 
-
-    public function process() {
+    public function process()
+    {
         $filters = $this->getFilters();
-       
+
         return $this->outputArray($filters);
     }
-
 }
-return 'BatcherFilterGetListProcessor';

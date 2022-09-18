@@ -27,40 +27,62 @@
  * @package batcher
  * @subpackage processors
  */
-if (!$modx->hasPermission('save_template')) {
-    return $modx->error->failure($modx->lexicon('access_denied'));
-}
+namespace Batcher\Processors\Element;
 
-if (empty($scriptProperties['element_ids'])) {
-    return $modx->error->failure($modx->lexicon('batcher.templates_err_ns'));
-}
+use MODX\Revolution\Processors\Processor;
+use MODX\Revolution\modTemplate;
+use MODX\Revolution\modCategory;
 
-/* Get the element type from request */
-$elementType = 'modTemplate';
-if (!empty($scriptProperties['element_type'])) {
-    $elementType = $scriptProperties['element_type'];
-}
-/* get parent */
-if (!empty($scriptProperties['category'])) {
-    $category = $modx->getObject('modCategory', $scriptProperties['category']);
-    if (empty($category)) {
-        return $modx->error->failure(
-            $modx->lexicon(
-                'batcher.category_err_nf',
-                array('id' => $scriptProperties['category'])
-            )
-        );
+class ChangeCategory extends Processor
+{
+    public function process()
+    {
+        if (!$this->modx->hasPermission('save_template')) {
+            return $this->failure($this->modx->lexicon('access_denied'));
+        }
+
+        if (empty($this->properties['element_ids'])) {
+            return $this->failure($this->modx->lexicon('batcher.templates_err_ns'));
+        }
+
+        /* Get the element type from request */
+        $elementType = modTemplate::class;
+        if (!empty($this->properties['element_type'])) {
+            $elementType = $this->properties['element_type'];
+        }
+
+        if ($elementType === modCategory::class) {
+            return $this->failure();
+        }
+
+        /* get parent */
+        if (!empty($this->properties['category'])) {
+            $category = $this->modx->getObject(modCategory::class, $this->properties['category']);
+            if (empty($category)) {
+                return $this->failure(
+                    $this->modx->lexicon(
+                        'batcher.category_err_nf',
+                        array('id' => $this->properties['category'])
+                    )
+                );
+            }
+        }
+        /* iterate over resources */
+        $elementIds = explode(',', $this->properties['element_ids']);
+        foreach ($elementIds as $elementId) {
+            $element = $this->modx->getObject($elementType, $elementId);
+            if ($element == null) {
+                continue;
+            }
+            $element->set('category', $this->properties['category']);
+            $element->save();
+        }
+
+        return $this->success();
+    }
+
+    public function getLanguageTopics()
+    {
+        return ['batcher:default'];
     }
 }
-/* iterate over resources */
-$elementIds = explode(',', $scriptProperties['element_ids']);
-foreach ($elementIds as $elementId) {
-    $element = $modx->getObject($elementType, $elementId);
-    if ($element == null) {
-        continue;
-    }
-    $element->set('category', $scriptProperties['category']);
-    $element->save();
-}
-
-return $modx->error->success();

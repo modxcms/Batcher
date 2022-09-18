@@ -27,10 +27,17 @@
  * @package batcher
  * @subpackage processors
  */
+namespace Batcher\Processors\Resource;
 
-class BatcherResourceGetListProcessor extends modObjectGetListProcessor
+use MODX\Revolution\Processors\Model\GetListProcessor;
+use MODX\Revolution\modResource;
+use MODX\Revolution\modTemplate;
+use xPDO\Om\xPDOQuery;
+use xPDO\Om\xPDOObject;
+
+class GetList extends GetListProcessor
 {
-    public $classKey = 'modResource';
+    public $classKey = modResource::class;
     public $objectType = 'resource';
     public $defaultSortField = 'pagetitle';
     public $defaultSortDirection = 'ASC';
@@ -47,7 +54,7 @@ class BatcherResourceGetListProcessor extends modObjectGetListProcessor
         $filterType  = $this->getProperty('filter_type');
         $filterValue = $this->getProperty('filter_value');
 
-        $c->leftJoin('modTemplate', 'Template');
+        $c->leftJoin(modTemplate::class, 'Template');
 
         if ($filterField) {
             switch ($filterType) {
@@ -134,5 +141,3 @@ class BatcherResourceGetListProcessor extends modObjectGetListProcessor
         return $objectArray;
     }
 }
-
-return 'BatcherResourceGetListProcessor';

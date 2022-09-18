@@ -27,29 +27,49 @@
  * @package batcher
  * @subpackage processors
  */
-if (!$modx->hasPermission('save_document')) return $modx->error->failure($modx->lexicon('access_denied'));
+namespace Batcher\Processors\Resource;
 
-if (empty($scriptProperties['resources'])) {
-    return $modx->error->failure($modx->lexicon('batcher.resources_err_ns'));
-}
-/* get parent */
-if (empty($scriptProperties['parent'])) {
-    return $modx->error->failure($modx->lexicon('batcher.parent_err_ns'));
-}
-$parentResource = $modx->getObject('modResource',$scriptProperties['parent']);
-if (empty($parentResource)) return $modx->error->failure($modx->lexicon('batcher.parent_err_nf'));
+use MODX\Revolution\Processors\Processor;
+use MODX\Revolution\modResource;
 
-/* iterate over resources */
-$resourceIds = explode(',',$scriptProperties['resources']);
-foreach ($resourceIds as $resourceId) {
-    $resource = $modx->getObject('modResource',$resourceId);
-    if ($resource == null) continue;
+class ChangeParent extends Processor
+{
+    public function process()
+    {
+        if (!$this->modx->hasPermission('save_document')) {
+            return $this->failure($this->modx->lexicon('access_denied'));
+        }
 
-    $resource->set('parent',$scriptProperties['parent']);
+        if (empty($this->properties['resources'])) {
+            return $this->failure($this->modx->lexicon('batcher.resources_err_ns'));
+        }
+        /* get parent */
+        if (empty($this->properties['parent'])) {
+            return $this->failure($this->modx->lexicon('batcher.parent_err_ns'));
+        }
+        $parentResource = $this->modx->getObject(modResource::class, $this->properties['parent']);
+        if (empty($parentResource)) {
+            return $this->failure($this->modx->lexicon('batcher.parent_err_nf'));
+        }
 
-    if ($resource->save() === false) {
-        
+        /* iterate over resources */
+        $resourceIds = explode(',', $this->properties['resources']);
+        foreach ($resourceIds as $resourceId) {
+            $resource = $this->modx->getObject(modResource::class, $resourceId);
+            if ($resource == null) continue;
+
+            $resource->set('parent', $this->properties['parent']);
+
+            if ($resource->save() === false) {
+
+            }
+        }
+
+        return $this->success();
+    }
+
+    public function getLanguageTopics()
+    {
+        return ['batcher:default'];
     }
 }
-
-return $modx->error->success();

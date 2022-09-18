@@ -25,21 +25,56 @@
  * @package batcher
  * @subpackage controllers
  */
+use MODX\Revolution\modExtraManagerController;
+use Batcher\Batcher;
 
-require_once dirname(dirname(__FILE__)) . '/index.class.php';
+class BatcherHomeManagerController extends modExtraManagerController
+{
+    public $batcher;
 
-class BatcherHomeManagerController extends BatcherBaseManagerController {
+    public function initialize()
+    {
+        $this->batcher = new Batcher($this->modx);
 
-    public function process(array $scriptProperties = array()) {
-        
+        $this->addCss($this->batcher->config['cssUrl'].'mgr.css');
+        $this->addJavascript($this->batcher->config['jsUrl'].'batcher.js');
+        $this->addHtml('<script type="text/javascript">
+        Ext.onReady(function() {
+            Batcher.config = '.$this->modx->toJSON($this->batcher->config).';
+        });
+        </script>');
     }
-    public function getPageTitle() { return $this->modx->lexicon('batcher'); }
-    public function loadCustomCssJs() {
+
+    public function getLanguageTopics()
+    {
+        return array('batcher:default');
+    }
+
+    public function checkPermissions()
+    {
+        return true;
+    }
+
+    public function process(array $scriptProperties = array())
+    {
+    }
+
+    public function getPageTitle()
+    {
+        return $this->modx->lexicon('batcher');
+    }
+
+    public function loadCustomCssJs()
+    {
         $this->addJavascript($this->modx->getOption('manager_url').'assets/modext/util/datetime.js');
         $this->addJavascript($this->batcher->config['jsUrl'].'widgets/element.grid.js');
         $this->addJavascript($this->batcher->config['jsUrl'].'widgets/resource.grid.js');
         $this->addJavascript($this->batcher->config['jsUrl'].'widgets/home.panel.js');
         $this->addLastJavascript($this->batcher->config['jsUrl'].'sections/home.js');
     }
-    public function getTemplateFile() { return $this->batcher->config['templatesPath'].'home.tpl'; }
+
+    public function getTemplateFile()
+    {
+        return $this->batcher->config['templatesPath'].'home.tpl';
+    }
 }

@@ -27,119 +27,138 @@
  * @package batcher
  * @subpackage processors
  */
-if (!$modx->hasPermission('save_document')) return $modx->error->failure($modx->lexicon('access_denied'));
+namespace Batcher\Processors\Resource;
 
-if (empty($scriptProperties['resources'])) {
-    return $modx->error->failure($modx->lexicon('batcher.resources_err_ns'));
-}
-$batch = $modx->getOption('batch',$scriptProperties,'');
-if (empty($batch)) return $modx->error->failure($modx->lexicon('batcher.action_err_ns'));
+use MODX\Revolution\Processors\Processor;
+use MODX\Revolution\modResource;
 
-$resourceIds = explode(',',$scriptProperties['resources']);
+class Batch extends Processor
+{
+    public function process()
+    {
+        if (!$this->modx->hasPermission('save_document')) {
+            return $this->failure($this->modx->lexicon('access_denied'));
+        }
 
-foreach ($resourceIds as $resourceId) {
-    $resource = $modx->getObject('modResource',$resourceId);
-    if ($resource == null) continue;
+        if (empty($this->properties['resources'])) {
+            return $this->failure($this->modx->lexicon('batcher.resources_err_ns'));
+        }
+        $batch = $this->modx->getOption('batch', $this->properties, '');
+        if (empty($batch)) {
+            return $this->failure($this->modx->lexicon('batcher.action_err_ns'));
+        }
 
-    switch ($batch) {
-        case 'publish':
-            if ($resource->get('published') == false) {
-                $resource->set('published',true);
-                $resource->set('publishedon',strftime('%Y-%m-%d %H:%M:%S'));
-                $resource->set('publishedby',$modx->user->get('id'));
-            } else {
-                continue;
+        $resourceIds = explode(',', $this->properties['resources']);
+
+        foreach ($resourceIds as $resourceId) {
+            $resource = $this->modx->getObject(modResource::class, $resourceId);
+            if ($resource == null) continue;
+
+            switch ($batch) {
+                case 'publish':
+                    if ($resource->get('published') == false) {
+                        $resource->set('published', true);
+                        $resource->set('publishedon', strftime('%Y-%m-%d %H:%M:%S'));
+                        $resource->set('publishedby', $this->modx->user->get('id'));
+                    } else {
+                        continue 2;
+                    }
+                    break;
+                case 'unpublish':
+                    if ($resource->get('published') == true) {
+                        $resource->set('published', false);
+                        $resource->set('publishedon', 0);
+                        $resource->set('publishedby', 0);
+                    } else {
+                        continue 2;
+                    }
+                    break;
+                case 'hidemenu':
+                    if ($resource->get('hidemenu') == false) {
+                        $resource->set('hidemenu', true);
+                    } else {
+                        continue 2;
+                    }
+                    break;
+                case 'unhidemenu':
+                    if ($resource->get('hidemenu') == true) {
+                        $resource->set('hidemenu', false);
+                    } else {
+                        continue 2;
+                    }
+                    break;
+                case 'cacheable':
+                    if ($resource->get('cacheable') == false) {
+                        $resource->set('cacheable', true);
+                    } else {
+                        continue 2;
+                    }
+                    break;
+                case 'uncacheable':
+                    if ($resource->get('cacheable') == true) {
+                        $resource->set('cacheable', false);
+                    } else {
+                        continue 2;
+                    }
+                    break;
+                case 'searchable':
+                    if ($resource->get('searchable') == false) {
+                        $resource->set('searchable', true);
+                    } else {
+                        continue 2;
+                    }
+                    break;
+                case 'unsearchable':
+                    if ($resource->get('searchable') == true) {
+                        $resource->set('searchable', false);
+                    } else {
+                        continue 2;
+                    }
+                    break;
+                case 'richtext':
+                    if ($resource->get('richtext') == false) {
+                        $resource->set('richtext', true);
+                    } else {
+                        continue 2;
+                    }
+                    break;
+                case 'unrichtext':
+                    if ($resource->get('richtext') == true) {
+                        $resource->set('richtext', false);
+                    } else {
+                        continue 2;
+                    }
+                    break;
+                case 'delete':
+                    if ($resource->get('deleted') == false) {
+                        $resource->set('deleted', true);
+                        $resource->set('deletedon', strftime('%Y-%m-%d %H:%M:%S'));
+                        $resource->set('deletedby', $this->modx->user->get('id'));
+                    } else {
+                        continue 2;
+                    }
+                    break;
+                case 'undelete':
+                    if ($resource->get('deleted') == true) {
+                        $resource->set('deleted', false);
+                        $resource->set('deletedon', 0);
+                        $resource->set('deletedby', 0);
+                    } else {
+                        continue 2;
+                    }
+                    break;
             }
-            break;
-        case 'unpublish':
-            if ($resource->get('published') == true) {
-                $resource->set('published',false);
-                $resource->set('publishedon',null);
-                $resource->set('publishedby',0);
-            } else {
-                continue;
+
+            if ($resource->save() === false) {
+
             }
-            break;
-        case 'hidemenu':
-            if ($resource->get('hidemenu') == false) {
-                $resource->set('hidemenu',true);
-            } else {
-                continue;
-            }
-            break;
-        case 'unhidemenu':
-            if ($resource->get('hidemenu') == true) {
-                $resource->set('hidemenu',false);
-            } else {
-                continue;
-            }
-            break;
-        case 'cacheable':
-            if ($resource->get('cacheable') == false) {
-                $resource->set('cacheable',true);
-            } else {
-                continue;
-            }
-            break;
-        case 'uncacheable':
-            if ($resource->get('cacheable') == true) {
-                $resource->set('cacheable',false);
-            } else {
-                continue;
-            }
-            break;
-        case 'searchable':
-            if ($resource->get('searchable') == false) {
-                $resource->set('searchable',true);
-            } else {
-                continue;
-            }
-            break;
-        case 'unsearchable':
-            if ($resource->get('searchable') == true) {
-                $resource->set('searchable',false);
-            } else {
-                continue;
-            }
-            break;
-        case 'richtext':
-            if ($resource->get('richtext') == false) {
-                $resource->set('richtext',true);
-            } else {
-                continue;
-            }
-            break;
-        case 'unrichtext':
-            if ($resource->get('richtext') == true) {
-                $resource->set('richtext',false);
-            } else {
-                continue;
-            }
-            break;
-        case 'delete':
-            if ($resource->get('deleted') == false) {
-                $resource->set('deleted',true);
-                $resource->set('deletedon',strftime('%Y-%m-%d %H:%M:%S'));
-                $resource->set('deletedby',$modx->user->get('id'));
-            } else {
-                continue;
-            }
-            break;
-        case 'undelete':
-            if ($resource->get('deleted') == true) {
-                $resource->set('deleted',false);
-                $resource->set('deletedon',null);
-                $resource->set('deletedby',0);
-            } else {
-                continue;
-            }
-            break;
+        }
+
+        return $this->success();
     }
 
-
-    if ($resource->save() === false) {
-
+    public function getLanguageTopics()
+    {
+        return ['batcher:default'];
     }
 }
-
-return $modx->error->success();
