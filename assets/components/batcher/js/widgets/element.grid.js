@@ -4,9 +4,9 @@ Batcher.grid.Elements = function(config) {
     this.sm = new Ext.grid.CheckboxSelectionModel();
 
     Ext.applyIf(config,{
-        url: Batcher.config.connector_url
+        url: MODx.config.connector_url
         ,baseParams: {
-            action: 'mgr/element/getList'
+            action: 'Batcher\\Processors\\Element\\GetList'
             ,thread: config.thread
         }
         ,fields: ['id', 'name', 'description', 'category', 'category_name']
@@ -55,12 +55,12 @@ Batcher.grid.Elements = function(config) {
             ,id: 'batcher-element-type'
             ,store: new Ext.data.SimpleStore({
                         data: [
-                            ['modTemplate', _('template')],
-                            ['modTemplateVar', _('tv')],
-                            ['modChunk', _('chunk')],
-                            ['modSnippet', _('snippet')],
-                            ['modPlugin', _('plugin')],
-                            ['modCategory', _('category')]
+                            ['MODX\\Revolution\\modTemplate', _('template')],
+                            ['MODX\\Revolution\\modTemplateVar', _('tv')],
+                            ['MODX\\Revolution\\modChunk', _('chunk')],
+                            ['MODX\\Revolution\\modSnippet', _('snippet')],
+                            ['MODX\\Revolution\\modPlugin', _('plugin')],
+                            ['MODX\\Revolution\\modCategory', _('category')]
                         ],
                         id: 0,
                         fields: ["value", "text"]
@@ -68,7 +68,7 @@ Batcher.grid.Elements = function(config) {
             ,valueField: 'value'
             ,displayField: 'text'
             ,mode: 'local'
-            ,value: 'modTemplate'
+            ,value: 'MODX\\Revolution\\modTemplate'
             ,emptyText: _('batcher.filter.element_type')
             ,listeners: {
                 'select': {fn:this.filterType,scope:this}
@@ -118,7 +118,7 @@ Ext.extend(Batcher.grid.Elements,MODx.grid.Grid,{
     }
     ,clearFilter: function() {
         this.getStore().baseParams = {
-            action: 'mgr/element/getList'
+            action: 'Batcher\\Processors\\Element\\GetList'
         };
         Ext.getCmp('batcher-element-type').reset();
         Ext.getCmp('batcher-element-search').reset();
@@ -166,28 +166,28 @@ Ext.extend(Batcher.grid.Elements,MODx.grid.Grid,{
         return cs;
     }
 
-    ,batchAction: function(act,btn,e) {
-        var cs = this.getSelectedAsList();
-        if (cs === false) return false;
+    // ,batchAction: function(act,btn,e) {
+    //     var cs = this.getSelectedAsList();
+    //     if (cs === false) return false;
 
-        MODx.Ajax.request({
-            url: this.config.url
-            ,params: {
-                action: 'mgr/resource/batch'
-                ,resources: cs
-                ,batch: act
-            }
-            ,listeners: {
-                'success': {fn:function(r) {
-                    this.getSelectionModel().clearSelections(true);
-                    this.refresh();
-                       var t = Ext.getCmp('modx-resource-tree');
-                       if (t) { t.refresh(); }
-                },scope:this}
-            }
-        });
-        return true;
-    }
+    //     MODx.Ajax.request({
+    //         url: this.config.url
+    //         ,params: {
+    //             action: 'mgr/resource/batch'
+    //             ,resources: cs
+    //             ,batch: act
+    //         }
+    //         ,listeners: {
+    //             'success': {fn:function(r) {
+    //                 this.getSelectionModel().clearSelections(true);
+    //                 this.refresh();
+    //                    var t = Ext.getCmp('modx-resource-tree');
+    //                    if (t) { t.refresh(); }
+    //             },scope:this}
+    //         }
+    //     });
+    //     return true;
+    // }
     ,changeCategory: function(btn,e) {
         var cs = this.getSelectedAsList();
         if (cs === false) return false;
@@ -228,9 +228,9 @@ Batcher.window.ChangeCategory = function(config) {
     config = config || {};
     Ext.applyIf(config,{
         title: _('batcher.change_category')
-        ,url: Batcher.config.connector_url
+        ,url: MODx.config.connector_url
         ,baseParams: {
-            action: 'mgr/element/changecategory'
+            action: 'Batcher\\Processors\\Element\\ChangeCategory'
         }
         ,width: 400
         ,fields: [{

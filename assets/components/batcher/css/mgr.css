@@ -1,18 +1,16 @@
-
 .batcher-resource-body {
     padding: 10px 0 10px 20px;
 }
-
 
 .batcher-grid .batcher-unpublished,
 .batcher-grid .batcher-unpublished span,
 .batcher-grid .batcher-unpublished a {
     color: gray;
 }
+
 .x-grid3-body .x-grid3-td-checker {
     background-image: none !important;
 }
-
 
 .batcher-deleted, .batcher-deleted span, .batcher-deleted a,
 .batcher-grid .batcher-deleted, .batcher-grid .batcher-deleted span, .batcher-grid .batcher-deleted a {
@@ -26,9 +24,11 @@
     box-shadow: none;
     color: #3697cd;
 }
+
 .batcher-btn-link button {
     font-size: 13px;
 }
+
 .batcher-btn-link:hover,
 .batcher-btn-link:focus,
 .batcher-btn-link:active,
@@ -36,6 +36,7 @@
     background-color: transparent !important;
     box-shadow: none !important;
 }
+
 .batcher-btn-link:hover button,
 .batcher-btn-link:focus button,
 .batcher-btn-link:active button,

@@ -1,1 +1,0 @@
-<div id="batcher-panel-template-tvs-div"></div>
